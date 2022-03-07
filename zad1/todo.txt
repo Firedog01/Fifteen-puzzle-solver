@@ -1,0 +1,24 @@
+uzupełnić funkcjonalności funkcji main (argumenty, itp)
+dodać obiekt z informacjami dodatkowymi
+    ogarnąć przeliczanie czasu
+dodać mechanizm zagadki
+    klasa zagadki (prosty obiekt)
+    zagadka manager
+    enum ruchów
+    zapisywanie ruchów
+    przechowywanie tablicy jako int64
+    wymyślić sprytny mechanizm zamieniania miejscami liczb
+    funkcja getNeighbours zwraca referencję do tablicy obiektów stanów sąsiednich
+funkcja która zmienia zagadkę (w managerze)
+    przyjmuje enum oraz stan zagadki
+implementacja testu czy stan jest stanem docelowym
+
+struktura katlogów:
+    src - pliki cpp
+        puzzle - zagadka, enum, manager
+        info - przechowywanie informacji
+        bfs
+        dfs
+        astr
+    lib - pliki h
+        [katalogi tak jak wyżej]

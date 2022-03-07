@@ -1,0 +1,65 @@
+Układy parzyste i nieparzyste
+Głębokość stanu - ile ruchów jest potrzebnych, żeby dojść do stanu docelowego
+    0 - ułożona zagadka
+    1 - 2 układy
+    2 - 4 układy
+    ...
+    53 - największa liczba układów
+    ...
+    80 - max
+
+Przesuwamy pole puste. Ogólnie w 4 różnych kierunkach. 
+
+Ruchy to operatory
+
+przestrzeń stanów - trzy elementy: 
+	- zbiór wszystkich stanów, 
+	- zbiór operatorów (L, R, U, D), 
+	- model przejścia
+model przejścia - funkcja dwuargumentowa, bierzący stan i operator który chcemy zaaplikować. 
+	Jako wynik otrzymujemy nowy stan po zaaplikowaniu tego operatora.
+Artificial intelligence, modern approach - książka
+
+problem który mamy rozwiązać
+	- przestrzeń stanów
+	- stan początkowy
+	- stan docelowy (-> test)
+	- jednostkowe koszty przejścia - ile kosztuje zastosowanie operatora w danym stanie (tyle samo dla wszystkich u nas)
+
+ścieżka - ciąg stanów powiązanych dopuszczalnymi operatorami
+	można określić koszt ścieżki, suma jednostkowych kosztów przejść
+rozwiązanie - ciąg operatorów prowadzących od stanu początkowego do stanu docelowego.
+rozwiązanie optymalne - o najmniejszym koszcie ścieżki spośród wszystkich rozwiązań
+
+graf skieorwany i etykietowany, z każdą krawędzią skorelowana jest etykieta operatora
+
+reprezentacja grafu: 
+	1. reprezentacja definicyjna (niezalecana) przechowywanie wszystkich stanów i połączeń
+	2. macież sąsiedztwa, informuje o tym jakie połączenia występują w grafie
+	3. lista sąsiedztwa, ponumerowane wieszchołki, przechowywane są informacje o połączeniach każdego wieszchołka
+	4. postać niejawna, przyjmuje jeden argument, generuje stany sąsiednie 
+	
+strategie:
+	- kompletne 
+		+ optymalne, gwarantują znalezienie rozwiązania optymalnego
+	- niekompletne - nawet jeśli istnieje roziwązanie to mogą go nie znaleźć
+strategie przeszukiwania:
+	- ślepe (brute-force, blind, uninformed) przeszukują w ustalonym porządku
+		+ wszerz (breadth-first search)
+		+ w głąb (depth-first search) [depth-limited search]
+	- heurystyczne (heuristic, informed, directed) istnieje funkcja która ocenia który kierunek jest najlepszy
+		+ A*
+heurystyka to oszacowanie, niekoniecznie prawdziwe. 
+	
+bfs wer 1:
+	- argumenty: struktura grafu i stan początkowy
+	- kolejka stanów
+	kolejkujemy stan początkowy 
+	loop:
+		czy kolejka jest pusta:
+			jeśli nie, pobierz pierwszy element z kolejki
+			sprawdź czy element jest rozwiązaniem (jeśli tak, zakończ)
+			zakolejkuj każdego sąsiada
+
+stan odwiedzony - włożony do kolejki, na liście stanów otwartych
+stan przetworzony - odpytany o sąsiadów
