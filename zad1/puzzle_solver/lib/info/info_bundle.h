@@ -6,6 +6,7 @@
 #define ZAD1_INFO_BUNDLE_H
 
 #include <chrono>
+#include <string>
 #include "timer.h"
 
 class info_bundle {
@@ -14,6 +15,7 @@ class info_bundle {
     unsigned int statesVisited;
     unsigned int statesProcessed;
     unsigned int maxDepth;
+    std::string extraInfoFile;
 
 public:
     info_bundle();
@@ -21,6 +23,8 @@ public:
     unsigned int getStatesVisited();
     unsigned int getStatesProcessed();
     unsigned int getMaxDepth();
+    const std::string& getExtraInfoFile();
+    void setExtraInfoFile(const std::string& s);
     double getExecutionTime();
 };
 

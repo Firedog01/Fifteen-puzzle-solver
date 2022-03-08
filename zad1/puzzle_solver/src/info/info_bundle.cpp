@@ -28,3 +28,11 @@ double info_bundle::getExecutionTime() {
     timer.reset();
     return ret;
 }
+
+const std::string &info_bundle::getExtraInfoFile() {
+    return extraInfoFile;
+}
+
+void info_bundle::setExtraInfoFile(const std::string &s) {
+    extraInfoFile = s;
+}

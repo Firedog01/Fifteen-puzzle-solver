@@ -82,14 +82,14 @@ Przykładowe wywołania programu:
 Wprawdzie program będzie służył do przebadania zachowania poszczególnych metod przeszukiwania przestrzeni stanów w
 przypadku klasycznej "Piętnastki", musi on być jednak napisany w sposób uniwersalny, to znaczy taki, który umożliwi
 generowanie rozwiązań także dla ramek o innych niż standardowe rozmiarach, w tym ramek niekwadratowych.
-Plik z układem początkowym
 
+Plik z układem początkowym
 Jest to plik tekstowy, w którym liczba linii zależy od rozmiaru ramki. Pierwsza linia zawiera dwie liczby całkowite w
 oraz k, oddzielone od siebie spacją, które określają odpowiednio pionowy (liczbę wierszy) i poziomy (liczbę kolumn)
 rozmiar ramki. Każda z pozostałych w linii zawiera k oddzielonych spacjami liczb całkowitych, które opisują położenie
 poszczególnych elementów układanki, przy czym wartość 0 oznacza wolne pole.
-Plik z rozwiązaniem
 
+Plik z rozwiązaniem
 Jest to plik tekstowy standardowo składający się z 2 linii. Pierwsza z nich zawiera liczbę całkowitą n, określającą
 długość znalezionego rozwiązania (czyli długość ciągu ruchów odpowiadających przesunięciom wolnego pola, które
 przeprowadzą układankę z zadanego układu początkowego do układu wzorcowego). Natomiast w drugiej linii znajduje się

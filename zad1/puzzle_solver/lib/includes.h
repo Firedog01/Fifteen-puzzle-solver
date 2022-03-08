@@ -5,4 +5,6 @@ namespace ops {
     enum operators {L, R, U, D};
 }
 
+typedef uint64_t board4x4;
+
 #endif //ZAD1_INCLUDES_H
