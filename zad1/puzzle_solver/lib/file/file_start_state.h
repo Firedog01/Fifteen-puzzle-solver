@@ -3,13 +3,19 @@
 
 #include <fstream>
 #include "../includes.h"
+#include "../puzzle/board.h"
 
+// max rozmiar 255x255, chyba starczy
 class file_start_state {
-    std::ifstream file;
+    uint8_t width;
+    uint8_t height;
+    uint8_t length;
+    uint8_t* state;
 
 public:
     file_start_state(std::string file);
-    board4x4 getState();
+    ~file_start_state();
+    board* getState();
 };
 
 

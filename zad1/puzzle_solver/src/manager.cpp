@@ -5,6 +5,7 @@
 manager::manager(char **argv) : info() {
     std::string strategy(argv[1]);
     file_start_state startStateHandler(argv[3]);
+    board* state = startStateHandler.getState();
     if(strategy == "bfs") {
         auto order = getOrder(argv[2]);
 
@@ -12,8 +13,10 @@ manager::manager(char **argv) : info() {
         auto order = getOrder(argv[2]);
 
     } else if(strategy == "astr") {
-
+        auto heuristic = getHeuristic(argv[2]);
     }
+    delete(state);
+
     double execTime = info.getExecutionTime();
     std::cout << execTime << '\n';
 }
@@ -53,4 +56,15 @@ ops::operators* manager::getOrder(std::string s) {
         return order;
     }
     return nullptr;
+}
+
+ops::heuristics manager::getHeuristic(std::string s) {
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    if(s == "hamm") {
+        return ops::hamm;
+    }
+    if(s == "manh") {
+        return ops::manh;
+    }
+    return ops::error;
 }
