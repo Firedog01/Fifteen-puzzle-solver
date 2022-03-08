@@ -6,6 +6,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(DTARGET_64 ON)          # target 64 bit
 set(COMPILE_FLAGS "-m64")   #
 
+set(SOURCE_FILES
+        puzzle_solver/src/info/info_bundle.cpp
+        puzzle_solver/src/info/timer.cpp
+        puzzle_solver/src/file/file_handler.cpp
+        puzzle_solver/src/file/file_info.cpp
+        puzzle_solver/src/file/file_start_state.cpp
+        puzzle_solver/src/file/file_end_state.cpp
+        puzzle_solver/src/manager.cpp
+        puzzle_solver/src/puzzle/board.cpp)
+
+add_library(zad1_lib ${SOURCE_FILES})
+
 add_subdirectory(puzzle_solver)
 add_subdirectory(automated_call)
 

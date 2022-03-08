@@ -13,7 +13,7 @@ class file_start_state {
     uint8_t* state;
 
 public:
-    file_start_state(std::string file);
+    file_start_state(const std::string& file);
     ~file_start_state();
     board* getState();
 };

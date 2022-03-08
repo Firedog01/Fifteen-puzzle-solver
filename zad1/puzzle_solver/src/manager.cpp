@@ -16,8 +16,10 @@ manager::manager(char **argv) : info() {
         auto heuristic = getHeuristic(argv[2]);
     }
     delete(state);
-
     double execTime = info.getExecutionTime();
+
+    std::ofstream saveFile("../../output.txt");
+    saveFile << execTime << '\n';
     std::cout << execTime << '\n';
 }
 

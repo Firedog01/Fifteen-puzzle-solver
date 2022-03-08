@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../../lib/file/file_start_state.h"
 
-file_start_state::file_start_state(std::string path) {
+file_start_state::file_start_state(const std::string& path) {
     std::ifstream file;
     file.open(path);
     if(file.is_open()) {
