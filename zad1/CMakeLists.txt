@@ -3,8 +3,8 @@ project(zad1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(DTARGET_64 ON)          # target 64 bit
-set(COMPILE_FLAGS "-m64")   #
+set(DTARGET_64 ON)            # target 64 bit
+set(COMPILE_FLAGS "-m64 -Ofast")
 
 set(SOURCE_FILES
         puzzle_solver/src/info/info_bundle.cpp
@@ -19,5 +19,4 @@ set(SOURCE_FILES
 add_library(zad1_lib ${SOURCE_FILES})
 
 add_subdirectory(puzzle_solver)
-add_subdirectory(automated_call)
 

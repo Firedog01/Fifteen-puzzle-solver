@@ -2,7 +2,6 @@
 #include "lib/manager.h"
 
 int main(int argc, char *argv[]) {
-    std::cout << "begin\n";
     if(argc != 6) {
         std::cout << "Incorrect number of parameters!\n"
                   << "Every call should have exactly 5 arguments.\n";
@@ -10,7 +9,6 @@ int main(int argc, char *argv[]) {
         file << "incorrect number of args";
         return 1;
     }
-    std::cout << "end\n";
     manager manager(argv);
     return 0;
 }
