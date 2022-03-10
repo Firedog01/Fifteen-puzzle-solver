@@ -1,5 +1,4 @@
 #include <iostream>
-#include <iomanip>
 #include "../lib/manager.h"
 #include "../lib/puzzle/board_handler.h"
 
@@ -10,30 +9,35 @@ manager::manager(char **argv) : info() {
     board* state = startStateHandler.getState();
 
     // creating solved state for comparisons
-    auto solved_board = new uint8_t[state->length];
-    auto sb_ptr = solved_board,
-         field_ptr = state->begin;
-    for(uint8_t i = 0; i < state->length; i++, field_ptr++, sb_ptr++) {
-        *sb_ptr = *field_ptr;
+    auto solved_board = new uint8_t[state->table_len];
+    auto solved_cursor = solved_board;
+    for(uint8_t i = 1; i < state->table_len; i++, solved_cursor++) {
+        *solved_cursor = i;
     }
-
+    *solved_cursor = 0;
+//    for(int i = 0; i < state->table_len; i++) {
+//        std::cout << +solved_board[i] << '\n';
+//    }
 
     if(strategy == "bfs") {
         auto order = getOrder(argv[2]); // ops::operators[4]
         uint16_t i = 0;
-        if(state->length == 16) {
-            while(board_handler::notSame16(solved_board, state->begin)) {
+        std::queue<board> queue;
+        queue.emplace(state); // call copy constructor and add
+        if(state->table_len == 16) {
+            std::cout << board_handler::notSameMod16(solved_board, state->table, state->table_len) << '\n';
+            while(false) {
                 ops::operators oper = order[i & 0b11]; // mod 4
-                board_handler::move(state, oper);
 
                 i++;
+                std::cout << "!";
             }
-        } else if(state->length % 4 == 0) {
-            while(board_handler::notSolvedMod4(solved_board, state->begin, state->length)) {
+        } else if(state->table_len % 4 == 0) {
+            while(board_handler::notSolvedMod4(solved_board, state->table, state->table_len)) {
                 ops::operators oper = order[i & 0b11];
             }
         } else {
-            while(board_handler::notSolvedAny(solved_board, state->begin, state->length)) {
+            while(board_handler::notSolvedAny(solved_board, state->table, state->table_len)) {
                 ops::operators oper = order[i & 0b11];
             }
         }
@@ -47,6 +51,7 @@ manager::manager(char **argv) : info() {
     }
     delete(state);
     auto execTime = info.getExecutionTime();
+    std::cout << execTime << '\n';
 
     std::ofstream solutionFile(argv[4]);
 
@@ -66,7 +71,7 @@ manager::manager(char **argv) : info() {
  * Creates new table that needs to be deleted.
  *
  * @param s input string
- * @return table of operators, length exactly 4 or nullptr
+ * @return table of operators, table_len exactly 4 or nullptr
  */
 ops::operators* manager::getOrder(std::string s) {
     if(s.size() == 4) {

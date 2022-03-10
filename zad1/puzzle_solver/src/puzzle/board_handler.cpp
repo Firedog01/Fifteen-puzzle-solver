@@ -1,17 +1,20 @@
+#include <iostream>
 #include "../../lib/puzzle/board_handler.h"
 
 void board_handler::move(board *board, ops::operators op) {
 
 }
 
-bool board_handler::notSame16(uint8_t* solved, uint8_t* state) {
+bool board_handler::notSameMod16(uint8_t* solved, uint8_t* state, uint8_t length) {
     auto solvedPtr = (uint64_t *)solved,
          statePtr = (uint64_t *)state;
-    uint64_t x = (*solvedPtr ^ *statePtr);
-    solvedPtr++;
-    statePtr++;
-    x += (*solvedPtr ^ *statePtr);
-    return !!x;
+    uint8_t steps = length >> 3;
+    for(uint8_t i = 0; i < steps; i++) {
+        if(*solvedPtr ^ *statePtr) { // 0 if same
+            return true;
+        }
+    }
+    return false;
 }
 
 bool board_handler::notSolvedMod4(uint8_t* solved, uint8_t* state, uint8_t length) {

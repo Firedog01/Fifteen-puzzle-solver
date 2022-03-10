@@ -11,9 +11,9 @@ class board_handler {
 public:
     static void move(board* board, ops::operators op);
 
-    // use this only if length == 16
-    static bool notSame16(uint8_t * solved, uint8_t * state);
-    // use this only if length % 4 == 0
+    // use this only if table_len == 16
+    static bool notSameMod16(uint8_t * solved, uint8_t * state, uint8_t length);
+    // use this only if table_len % 4 == 0
     static bool notSolvedMod4(uint8_t * solved, uint8_t * state, uint8_t length);
     static bool notSolvedAny(uint8_t * solved, uint8_t * state, uint8_t length);
 };
