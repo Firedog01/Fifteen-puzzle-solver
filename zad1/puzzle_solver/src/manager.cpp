@@ -9,20 +9,20 @@ manager::manager(char **argv) : info() {
     file_start_state startStateHandler(argv[3]);
     board* state = startStateHandler.getState();
 
-    // creating solvedMod4 state for comparisons
+    // creating solved state for comparisons
     auto solved_board = new uint8_t[state->length];
-    auto sb_ptr = solved_board;
-    uint8_t* field_ptr = state->begin;
+    auto sb_ptr = solved_board,
+         field_ptr = state->begin;
     for(uint8_t i = 0; i < state->length; i++, field_ptr++, sb_ptr++) {
         *sb_ptr = *field_ptr;
     }
 
 
     if(strategy == "bfs") {
-        auto order = getOrder(argv[2]);
+        auto order = getOrder(argv[2]); // ops::operators[4]
         uint16_t i = 0;
         if(state->length == 16) {
-            while(board_handler::notSolved16(solved_board, state->begin)) {
+            while(board_handler::notSame16(solved_board, state->begin)) {
                 ops::operators oper = order[i & 0b11]; // mod 4
                 board_handler::move(state, oper);
 

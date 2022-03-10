@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../../lib/puzzle/board.h"
 
 

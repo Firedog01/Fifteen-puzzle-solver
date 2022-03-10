@@ -4,7 +4,7 @@ void board_handler::move(board *board, ops::operators op) {
 
 }
 
-bool board_handler::notSolved16(uint8_t* solved, uint8_t* state) {
+bool board_handler::notSame16(uint8_t* solved, uint8_t* state) {
     auto solvedPtr = (uint64_t *)solved,
          statePtr = (uint64_t *)state;
     uint64_t x = (*solvedPtr ^ *statePtr);

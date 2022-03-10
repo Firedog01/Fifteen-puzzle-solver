@@ -12,7 +12,7 @@ public:
     static void move(board* board, ops::operators op);
 
     // use this only if length == 16
-    static bool notSolved16(uint8_t * solved, uint8_t * state);
+    static bool notSame16(uint8_t * solved, uint8_t * state);
     // use this only if length % 4 == 0
     static bool notSolvedMod4(uint8_t * solved, uint8_t * state, uint8_t length);
     static bool notSolvedAny(uint8_t * solved, uint8_t * state, uint8_t length);

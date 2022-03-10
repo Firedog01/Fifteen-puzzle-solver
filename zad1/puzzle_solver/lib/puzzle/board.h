@@ -3,11 +3,11 @@
 
 #include <cstdint>
 
-class board {
-public:
+struct board {
     uint8_t zeroIdx;
     uint8_t length;
     uint8_t* begin;
+    //save path from solution?
     board(uint8_t* ptr, uint8_t length);
     board(uint8_t* ptr, uint8_t length, uint8_t zeroIdx);
 };
