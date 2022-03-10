@@ -53,7 +53,8 @@ heurystyka to oszacowanie, niekoniecznie prawdziwe.
 	
 bfs wer 1:
 	- argumenty: struktura grafu i stan początkowy
-	- kolejka stanów
+	- kolejka stanów przetwarzanych
+	- kolejka stanów odwiedzonych
 	kolejkujemy stan początkowy 
 	loop:
 		czy kolejka jest pusta:

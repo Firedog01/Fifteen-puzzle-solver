@@ -9,6 +9,7 @@ public:
     uint8_t length;
     uint8_t* begin;
     board(uint8_t* ptr, uint8_t length);
+    board(uint8_t* ptr, uint8_t length, uint8_t zeroIdx);
 };
 
 

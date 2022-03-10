@@ -9,10 +9,10 @@
 #include <string>
 #include <fstream>
 
-class file_end_state {
+class file_solution {
     std::ofstream file;
 public:
-    file_end_state(std::string file);
+    file_solution(std::string file);
 };
 
 
