@@ -15,6 +15,7 @@ struct board {
     uint8_t zeroIdx;
     ops::operators* path;
     uint16_t pathLen;
+    ops::operators lastOp;
 
     explicit board(const board* o); // copy constructor
     // copy and add new operator

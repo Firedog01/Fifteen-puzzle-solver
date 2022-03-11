@@ -1,35 +1,47 @@
 #include "../../lib/puzzle/board_handler.h"
 
 board* board_handler::createMoved(board* old_board, ops::operators op) {
-    auto new_board = new board(old_board, op);
+
+    uint8_t movedZeroIdx = old_board->zeroIdx;
 
     switch(op) {
         case ops::L:
             if(old_board->zeroIdx % board::width == 0)
                 return nullptr;
-            new_board->zeroIdx--;
+            if(old_board->lastOp == ops::R && old_board->pathLen > 0)
+                return nullptr;
+            movedZeroIdx--;
             break;
         case ops::R:
             if(old_board->zeroIdx % board::width == board::width - 1)
                 return nullptr;
-            new_board->zeroIdx++;
+            if(old_board->lastOp == ops::L && old_board->pathLen > 0)
+                return nullptr;
+            movedZeroIdx++;
             break;
         case ops::U:
             if(old_board->zeroIdx < board::width)
                 return nullptr;
-            new_board->zeroIdx -= board::width;
+            if(old_board->lastOp == ops::D && old_board->pathLen > 0)
+                return nullptr;
+            movedZeroIdx -= board::width;
             break;
         case ops::D:
             if(old_board->zeroIdx > (board::len - board::width))
                 return nullptr;
-            new_board->zeroIdx += board::width;
+            if(old_board->lastOp == ops::U && old_board->pathLen > 0)
+                return nullptr;
+            movedZeroIdx += board::width;
             break;
         default: // like that ever gonna happen
             return nullptr;
     }
+
+    // Creating new board after checking legality of move to avoid memory leak
+    auto new_board = new board(old_board, op);
     uint8_t *ptr_oz = new_board->table, *ptr_nz = new_board->table;
     ptr_oz += old_board->zeroIdx;
-    ptr_nz += new_board->zeroIdx;
+    ptr_nz += movedZeroIdx;
     *ptr_oz = *ptr_nz;
     *ptr_nz = 0;
     return new_board;
