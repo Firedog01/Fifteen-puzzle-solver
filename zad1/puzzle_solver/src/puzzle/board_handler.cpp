@@ -1,23 +1,34 @@
 #include <iostream>
 #include "../../lib/puzzle/board_handler.h"
 
-void board_handler::move(board *board, ops::operators op) {
-
+board* board_handler::createMoved(board* current, ops::operators op) {
+    return new board(nullptr, 0);
 }
 
-bool board_handler::notSameMod16(uint8_t* solved, uint8_t* state, uint8_t length) {
+
+uint8_t *board_handler::getSolvedTable(uint16_t length) {
+    auto solved_table = new uint8_t[length];
+    auto solved_cursor = solved_table;
+    for(uint8_t i = 1; i < length; i++, solved_cursor++) {
+        *solved_cursor = i;
+    }
+    *solved_cursor = 0; // last element is 0
+    return solved_table;
+}
+
+bool board_handler::sameMod16(uint8_t* solved, uint8_t* state, uint8_t length) {
     auto solvedPtr = (uint64_t *)solved,
          statePtr = (uint64_t *)state;
     uint8_t steps = length >> 3;
     for(uint8_t i = 0; i < steps; i++) {
         if(*solvedPtr ^ *statePtr) { // 0 if same
-            return true;
+            return false;
         }
     }
-    return false;
+    return true;
 }
 
-bool board_handler::notSolvedMod4(uint8_t* solved, uint8_t* state, uint8_t length) {
+bool board_handler::sameMod4(uint8_t* solved, uint8_t* state, uint8_t length) {
     auto solvedPtr = (uint32_t *)solved,
          statePtr = (uint32_t *)state;
     uint8_t steps = length >> 2;
@@ -29,7 +40,7 @@ bool board_handler::notSolvedMod4(uint8_t* solved, uint8_t* state, uint8_t lengt
     return false;
 }
 
-bool board_handler::notSolvedAny(uint8_t* solved, uint8_t* state, uint8_t length) {
+bool board_handler::sameAny(uint8_t* solved, uint8_t* state, uint8_t length) {
     uint8_t *solvedPtr = solved,
             *statePtr = state;
 
@@ -40,3 +51,4 @@ bool board_handler::notSolvedAny(uint8_t* solved, uint8_t* state, uint8_t length
     }
     return false;
 }
+

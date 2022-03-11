@@ -6,39 +6,45 @@
 manager::manager(char **argv) : info() {
     std::string strategy(argv[1]);
     file_start_state startStateHandler(argv[3]);
-    board* state = startStateHandler.getState();
 
-    // creating solved state for comparisons
-    auto solved_board = new uint8_t[state->table_len];
-    auto solved_cursor = solved_board;
-    for(uint8_t i = 1; i < state->table_len; i++, solved_cursor++) {
-        *solved_cursor = i;
-    }
-    *solved_cursor = 0;
-//    for(int i = 0; i < state->table_len; i++) {
-//        std::cout << +solved_board[i] << '\n';
-//    }
+    board* start_state = startStateHandler.getState();
+    uint16_t table_length = startStateHandler.getLength();
+    uint8_t* solved_table = board_handler::getSolvedTable(table_length);
 
     if(strategy == "bfs") {
-        auto order = getOrder(argv[2]); // ops::operators[4]
-        uint16_t i = 0;
-        std::queue<board> queue;
-        queue.emplace(state); // call copy constructor and add
-        if(state->table_len == 16) {
-            std::cout << board_handler::notSameMod16(solved_board, state->table, state->table_len) << '\n';
-            while(false) {
-                ops::operators oper = order[i & 0b11]; // mod 4
+        ops::operators* order = getOrder(argv[2]); // ops::operators[4]
+        std::queue<board*> q_to_process; // ueue is silent
+        std::vector<board*> visited; //
+        q_to_process.emplace(start_state);
 
-                i++;
-                std::cout << "!";
-            }
-        } else if(state->table_len % 4 == 0) {
-            while(board_handler::notSolvedMod4(solved_board, state->table, state->table_len)) {
-                ops::operators oper = order[i & 0b11];
-            }
+        // same is function pointer. There are different functions depending on table_length
+        bool (*same)(uint8_t* solved_table, uint8_t* current_table, uint8_t table_length);
+        if(table_length % 8 == 0) {
+            same = &board_handler::sameMod16;
+        } else if(table_length % 4 == 0) {
+            same = &board_handler::sameMod4;
         } else {
-            while(board_handler::notSolvedAny(solved_board, state->table, state->table_len)) {
-                ops::operators oper = order[i & 0b11];
+            same = &board_handler::sameAny;
+        }
+
+        while(true) {
+            if(q_to_process.empty()) {
+                std::cout << "no solution found!\n";
+                // todo
+                break;
+            }
+            board* cur_state = q_to_process.front();
+            q_to_process.pop();
+            if(same(solved_table, cur_state->table, table_length)) {
+                std::cout << "solution found!\n";
+                // todo
+                break;
+            } else {
+                ops::operators* op = order;
+                for(int i = 0; i < 4; i++, op++) {
+                    auto new_board_ptr = board_handler::createMoved(cur_state, *op);
+                    q_to_process.push(new_board_ptr);
+                }
             }
         }
 
@@ -49,7 +55,7 @@ manager::manager(char **argv) : info() {
     } else if(strategy == "astr") {
         auto heuristic = getHeuristic(argv[2]);
     }
-    delete(state);
+    delete(start_state);
     auto execTime = info.getExecutionTime();
     std::cout << execTime << '\n';
 

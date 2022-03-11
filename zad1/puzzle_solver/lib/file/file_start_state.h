@@ -16,6 +16,7 @@ public:
     file_start_state(const std::string& file);
     ~file_start_state();
     board* getState();
+    uint16_t getLength();
 };
 
 

@@ -33,3 +33,7 @@ board* file_start_state::getState() {
 file_start_state::~file_start_state() {
     delete[](state);
 }
+
+uint16_t file_start_state::getLength() {
+    return length;
+}

@@ -6,14 +6,13 @@
 
 struct board {
     uint8_t* table;
-    uint8_t table_len;
     uint8_t zeroIdx;
     ops::operators* path;
-    uint16_t path_len;
+    uint16_t pathLen;
 
-    board(const board* o);
-    board(uint8_t* ptr, uint8_t length);
-    board(uint8_t* ptr, uint8_t length, uint8_t zeroIdx);
+    board(const board* o, uint16_t tableLen);
+    board(uint8_t* ptr, uint16_t length);
+    board(uint8_t* ptr, uint8_t zeroIdx, ops::operators* path, uint16_t pathLen);
     ~board();
 };
 
