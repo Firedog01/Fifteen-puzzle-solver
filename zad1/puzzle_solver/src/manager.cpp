@@ -10,7 +10,7 @@ manager::manager(char **argv) : info() {
 
     if(strategy == "bfs") {
         ops::operators* order = getOrder(argv[2]); // ops::operators[4]
-        std::queue<board*> q_to_process; // ueue is silent
+        std::queue<board*> q_to_process; // queue is silent
         std::vector<board*> visited; //
         q_to_process.emplace(start_state);
 
