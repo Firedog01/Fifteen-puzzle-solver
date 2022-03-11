@@ -4,7 +4,7 @@ project(zad1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(DTARGET_64 ON)            # target 64 bit
-set(COMPILE_FLAGS "-m64 -Ofast -funsafe-loop-optimizations")
+set(COMPILE_FLAGS "-m64 -Ofast")
 
 set(SOURCE_FILES
         puzzle_solver/src/info/info_bundle.cpp

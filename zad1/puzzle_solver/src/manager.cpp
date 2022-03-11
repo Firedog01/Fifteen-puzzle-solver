@@ -1,6 +1,4 @@
-#include <iostream>
 #include "../lib/manager.h"
-#include "../lib/puzzle/board_handler.h"
 
 
 manager::manager(char **argv) : info() {
@@ -8,8 +6,7 @@ manager::manager(char **argv) : info() {
     file_start_state startStateHandler(argv[3]);
 
     board* start_state = startStateHandler.getState();
-    uint16_t table_length = startStateHandler.getLength();
-    uint8_t* solved_table = board_handler::getSolvedTable(table_length);
+    uint8_t* solved_table = board_handler::getSolvedTable();
 
     if(strategy == "bfs") {
         ops::operators* order = getOrder(argv[2]); // ops::operators[4]
@@ -18,15 +15,15 @@ manager::manager(char **argv) : info() {
         q_to_process.emplace(start_state);
 
         // same is function pointer. There are different functions depending on table_length
-        bool (*same)(uint8_t* solved_table, uint8_t* current_table, uint8_t table_length);
-        if(table_length % 8 == 0) {
+        bool (*same)(uint8_t* first, uint8_t* second);
+        if(board::len % 8 == 0) {
             same = &board_handler::sameMod16;
-        } else if(table_length % 4 == 0) {
+        } else if(board::len % 4 == 0) {
             same = &board_handler::sameMod4;
         } else {
             same = &board_handler::sameAny;
         }
-
+        int iterations = 0;
         while(true) {
             if(q_to_process.empty()) {
                 std::cout << "no solution found!\n";
@@ -34,18 +31,42 @@ manager::manager(char **argv) : info() {
                 break;
             }
             board* cur_state = q_to_process.front();
-            q_to_process.pop();
-            if(same(solved_table, cur_state->table, table_length)) {
+//            auto cursor = cur_state->path;
+//            for(int i = 0; i < cur_state->pathLen; i++, cursor++) {
+//                std::cout << *cursor;
+//            }
+//            std::cout << "\n";
+            if(iterations % 100000 == 0) {
+                std::cout << iterations << '\n';
+            }
+
+
+
+            if(same(solved_table, cur_state->table)) {
                 std::cout << "solution found!\n";
                 // todo
                 break;
             } else {
                 ops::operators* op = order;
                 for(int i = 0; i < 4; i++, op++) {
-                    auto new_board_ptr = board_handler::createMoved(cur_state, *op);
-                    q_to_process.push(new_board_ptr);
+                    auto new_board = board_handler::createMoved(cur_state, *op);
+                    if(new_board == nullptr) {
+                        continue;
+                    }
+                    auto found = std::find_if(
+                            visited.begin(),
+                            visited.end(),
+                            [same, new_board](board* cur) {
+                                return same(cur->table, new_board->table);
+                            });
+                    if(found == visited.end()) { // not found
+                        q_to_process.push(new_board);
+                    }
                 }
             }
+            q_to_process.pop();
+            delete(cur_state);
+            iterations++;
         }
 
 
@@ -101,13 +122,12 @@ ops::operators* manager::getOrder(std::string s) {
                     order[i] = ops::D;
                     break;
                 default:
-                    delete[](order);
-                    return nullptr;
+                    throw std::logic_error("illegal operators, must be permutation of L, R, U, D");
             }
         }
         return order;
     }
-    return nullptr;
+    throw std::logic_error("incorrect operators count");
 }
 
 ops::heuristics manager::getHeuristic(std::string s) {

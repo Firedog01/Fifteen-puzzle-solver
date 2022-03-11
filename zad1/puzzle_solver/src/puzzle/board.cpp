@@ -1,12 +1,13 @@
-#include <algorithm>
-#include <iostream>
 #include "../../lib/puzzle/board.h"
 
+uint8_t board::len;
+uint8_t board::width;
+uint8_t board::height;
 
-board::board(uint8_t *ptr, uint16_t length) : table(ptr), path(nullptr), pathLen(0) {
+board::board(uint8_t *ptr) : table(ptr), path(nullptr), pathLen(0) {
     int i = 0;
     uint8_t* cursor = table;
-    while(i < length && !!*cursor) {
+    while(i < len && !!*cursor) {
         i++;
         cursor++;
     }
@@ -18,34 +19,48 @@ board::~board() {
     delete[](path);
 }
 
-board::board(const board *o, uint16_t tableLen) : zeroIdx(o->zeroIdx), pathLen(o->pathLen) {
-    table = new uint8_t[tableLen];
-
-    if(tableLen % 8 == 0) {
-        auto cursor_this = (uint64_t *) table,
-             cursor_o = (uint64_t *) o->table;
-        uint8_t steps = tableLen >> 3;
-        for(uint8_t i = 0; i < steps; i++, cursor_o++, cursor_this++) {
-            *cursor_this = *cursor_o;
-        }
-    } else if(tableLen % 4 == 0) {
-        auto cursor_this = (uint32_t *) table,
-            cursor_o = (uint32_t *) o->table;
-        uint8_t steps = tableLen >> 2;
-        for(uint8_t i = 0; i < steps; i++, cursor_o++, cursor_this++) {
-            *cursor_this = *cursor_o;
-        }
-    } else if(tableLen % 2 == 0) {
-        auto cursor_this = (uint16_t *) table,
-                cursor_o = (uint16_t *) o->table;
-        uint8_t steps = tableLen >> 1;
-        for(uint8_t i = 0; i < steps; i++, cursor_o++, cursor_this++) {
-            *cursor_this = *cursor_o;
-        }
-    } else {
-        std::copy(o->table, o->table + tableLen, table);
-    }
+board::board(const board *o) : zeroIdx(o->zeroIdx), pathLen(o->pathLen) {
+    table = new uint8_t[len];
+    path = new ops::operators[pathLen];
+    std::copy(o->table, o->table + len, table);
     std::copy(o->path, o->path + pathLen, path);
+}
+
+board::board(const board* o, ops::operators newOp) : zeroIdx(o->zeroIdx), pathLen(o->pathLen + 1) {
+    table = new uint8_t[len];
+    path = new ops::operators[pathLen];
+    std::copy(o->table, o->table + len, table);
+    std::copy(o->path, o->path + o->pathLen, path);
+    path[pathLen - 1] = newOp;
+//    switch(newOp) {
+//        case ops::L:
+//            if(zeroIdx % board::width == 0) {
+//                return nullptr;
+//            }
+//            zeroIdx--;
+//            break;
+//        case ops::R:
+//            if(zeroIdx % board::width == board::width - 1) {
+//                return nullptr;
+//            }
+//            zeroIdx++;
+//            break;
+//        case ops::U:
+//            if(zeroIdx < board::width) {
+//                return nullptr;
+//            }
+//            zeroIdx -= board::width;
+//            break;
+//        case ops::D:
+//            if(zeroIdx > (board::len - board::width)) {
+//                return nullptr;
+//            }
+//            zeroIdx += board::width;
+//
+//            break;
+//        default: // like that ever gonna happen
+//            return nullptr;
+//    }
 }
 
 board::board(uint8_t *ptr, uint8_t zeroIdx, ops::operators *path, uint16_t pathLen) :
