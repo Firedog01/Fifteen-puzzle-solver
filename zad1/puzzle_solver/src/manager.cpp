@@ -9,6 +9,9 @@ manager::manager(char **argv) : info() {
     board* start_state = startStateHandler.getState();
     uint8_t* solved_table = board_handler::getSolvedTable();
 
+    ops::operators* solution = nullptr;
+    int solution_len = 0;
+
     if(strategy == "bfs") {
         ops::operators* order = getOrder(argv[2]); // ops::operators[4]
         std::queue<board*> q_to_process; // queue is silent
@@ -39,10 +42,9 @@ manager::manager(char **argv) : info() {
             }
 
             if(same(solved_table, cur_state->table)) {
-                std::cout << "solution found!\n";
-                displayBoard(cur_state->table);
-                std::cout << '\n';
-                displayBoard(solved_table);
+                // solution found!
+                solution = cur_state->path;
+                solution_len = cur_state->pathLen;
                 break;
             } else {
                 ops::operators* op = order;
@@ -80,7 +82,15 @@ manager::manager(char **argv) : info() {
     std::cout << execTime << '\n';
 
     std::ofstream solutionFile(argv[4]);
-
+    if(solution != nullptr) {
+        solutionFile << solution_len << '\n';
+        for(int i = 0; i < solution_len; i++, solution++) {
+            solutionFile << *solution;
+        }
+        solutionFile << '\n';
+    } else {
+        solutionFile << "-1\n";
+    }
     solutionFile.close();
 
     std::ofstream infoFile(argv[5]);
