@@ -24,7 +24,7 @@ manager::manager(char **argv) : info() {
         } else {
             same = &board_handler::sameAny;
         }
-        int iterations = 0;
+        int iterations = -1;
         board* cur_state;
         while(true) {
             if(q_to_process.empty()) {
@@ -33,16 +33,10 @@ manager::manager(char **argv) : info() {
                 break;
             }
             cur_state = q_to_process.front();
-            //!!!!!!!!!!!!!!!!!!!!
-            if(cur_state->pathLen > 2) {
-                std::cout << "solution too long\n";
-                break;
+            if(iterations < cur_state->pathLen) {
+                iterations++;
+                std::cout << iterations << '\n';
             }
-            displayPath(cur_state);
-            displayBoard(cur_state->table);
-            std::cout << "-----\n";
-            displayBoard(solved_table);
-            std::cout << '\n';
 
             if(same(solved_table, cur_state->table)) {
                 std::cout << "solution found!\n";
@@ -72,7 +66,6 @@ manager::manager(char **argv) : info() {
             }
             visited.push_back(cur_state);
             q_to_process.pop();
-            iterations++;
         }
 
 
