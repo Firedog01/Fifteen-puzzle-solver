@@ -4,7 +4,7 @@ uint8_t board::len;
 uint8_t board::width;
 uint8_t board::height;
 
-board::board(uint8_t *ptr) : table(ptr), path(nullptr), pathLen(0) {
+board::board(uint8_t *ptr) : table(ptr), path(nullptr), pathLen(0), lastOp(ops::Undefined) {
     int i = 0;
     uint8_t* cursor = table;
     while(i < len && !!*cursor) {
@@ -19,19 +19,20 @@ board::~board() {
     delete[](path);
 }
 
-board::board(const board *o) : zeroIdx(o->zeroIdx), pathLen(o->pathLen) {
+board::board(const board *o) : zeroIdx(o->zeroIdx), pathLen(o->pathLen), lastOp(ops::Undefined) {
     table = new uint8_t[len];
     path = new ops::operators[pathLen];
     std::copy(o->table, o->table + len, table);
     std::copy(o->path, o->path + pathLen, path);
 }
 
-board::board(const board* o, ops::operators newOp) : zeroIdx(o->zeroIdx), pathLen(o->pathLen + 1) {
+board::board(const board* o, ops::operators newOp) : zeroIdx(o->zeroIdx), pathLen(o->pathLen + 1), lastOp(newOp) {
     table = new uint8_t[len];
     path = new ops::operators[pathLen];
     std::copy(o->table, o->table + len, table);
     std::copy(o->path, o->path + o->pathLen, path);
     path[pathLen - 1] = newOp;
+
 //    switch(newOp) {
 //        case ops::L:
 //            if(zeroIdx % board::width == 0) {
@@ -64,4 +65,4 @@ board::board(const board* o, ops::operators newOp) : zeroIdx(o->zeroIdx), pathLe
 }
 
 board::board(uint8_t *ptr, uint8_t zeroIdx, ops::operators *path, uint16_t pathLen) :
-    table(ptr), zeroIdx(zeroIdx), path(path), pathLen(pathLen) {}
+    table(ptr), zeroIdx(zeroIdx), path(path), pathLen(pathLen), lastOp(ops::Undefined) {}

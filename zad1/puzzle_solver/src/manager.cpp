@@ -2,6 +2,7 @@
 
 
 manager::manager(char **argv) : info() {
+
     std::string strategy(argv[1]);
     file_start_state startStateHandler(argv[3]);
 
@@ -16,35 +17,38 @@ manager::manager(char **argv) : info() {
 
         // same is function pointer. There are different functions depending on table_length
         bool (*same)(uint8_t* first, uint8_t* second);
-        if(board::len % 8 == 0) {
+        if((board::len + 1) % 8 == 0) {
             same = &board_handler::sameMod16;
-        } else if(board::len % 4 == 0) {
+        } else if((board::len + 1) % 4 == 0) {
             same = &board_handler::sameMod4;
         } else {
             same = &board_handler::sameAny;
         }
         int iterations = 0;
+        board* cur_state;
         while(true) {
             if(q_to_process.empty()) {
                 std::cout << "no solution found!\n";
                 // todo
                 break;
             }
-            board* cur_state = q_to_process.front();
-//            auto cursor = cur_state->path;
-//            for(int i = 0; i < cur_state->pathLen; i++, cursor++) {
-//                std::cout << *cursor;
-//            }
-//            std::cout << "\n";
-            if(iterations % 100000 == 0) {
-                std::cout << iterations << '\n';
+            cur_state = q_to_process.front();
+            //!!!!!!!!!!!!!!!!!!!!
+            if(cur_state->pathLen > 2) {
+                std::cout << "solution too long\n";
+                break;
             }
-
-
+            displayPath(cur_state);
+            displayBoard(cur_state->table);
+            std::cout << "-----\n";
+            displayBoard(solved_table);
+            std::cout << '\n';
 
             if(same(solved_table, cur_state->table)) {
                 std::cout << "solution found!\n";
-                // todo
+                displayBoard(cur_state->table);
+                std::cout << '\n';
+                displayBoard(solved_table);
                 break;
             } else {
                 ops::operators* op = order;
@@ -56,16 +60,18 @@ manager::manager(char **argv) : info() {
                     auto found = std::find_if(
                             visited.begin(),
                             visited.end(),
-                            [same, new_board](board* cur) {
-                                return same(cur->table, new_board->table);
+                            [same, new_board](board* i) {
+                                return same(i->table, new_board->table);
                             });
                     if(found == visited.end()) { // not found
                         q_to_process.push(new_board);
+                    } else {
+                        delete(new_board);
                     }
                 }
             }
+            visited.push_back(cur_state);
             q_to_process.pop();
-            delete(cur_state);
             iterations++;
         }
 
@@ -139,4 +145,33 @@ ops::heuristics manager::getHeuristic(std::string s) {
         return ops::manh;
     }
     return ops::error;
+}
+
+void manager::displayPath(board *cur_state) {
+    auto cursor = cur_state->path;
+    for(int i = 0; i < cur_state->pathLen; i++, cursor++) {
+        switch(*cursor) {
+            case ops::L:
+                std::cout << "L";
+                break;
+            case ops::R:
+                std::cout << "R";
+                break;
+            case ops::D:
+                std::cout << "D";
+                break;
+            case ops::U:
+                std::cout << "U";
+                break;
+        }
+    }
+    std::cout << "\n";
+}
+
+void manager::displayBoard(uint8_t *state) {
+    for(int i = 0; i < board::len; i++) {
+        std::cout << +state[i] << " ";
+        if(i % 4 == 3)
+            std::cout << '\n';
+    }
 }

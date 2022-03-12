@@ -18,6 +18,9 @@ class manager {
     static ops::operators* getOrder(std::string s);
     static ops::heuristics getHeuristic(std::string s);
 
+    void displayPath(board* state);
+    void displayBoard(uint8_t * state);
+
 public:
     manager(char** argv);
 };

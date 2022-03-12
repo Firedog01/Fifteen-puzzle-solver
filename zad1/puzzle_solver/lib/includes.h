@@ -3,7 +3,7 @@
 
 // todo: rename this namespace
 namespace ops {
-    enum operators {L, R, U, D};
+    enum operators {L, R, U, D, Undefined};
     enum heuristics {hamm, manh, error};
 }
 
