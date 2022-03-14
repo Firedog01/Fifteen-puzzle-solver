@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <xmmintrin.h>
 #include "../includes.h"
 #include "board.h"
 
@@ -14,7 +15,8 @@ public:
     static uint8_t* getSolvedTable();
 
     // use this only if table_len == 16
-    static bool sameMod16(uint8_t * solved, uint8_t * state);
+    static bool same16(uint8_t * solved, uint8_t * state);
+    static bool sameMod8(uint8_t * solved, uint8_t * state);
     // use this only if table_len % 4 == 0
     static bool sameMod4(uint8_t * solved, uint8_t * state);
     static bool sameAny(uint8_t * solved, uint8_t * state);

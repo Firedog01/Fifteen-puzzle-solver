@@ -58,7 +58,15 @@ uint8_t *board_handler::getSolvedTable() {
     return solved_table;
 }
 
-bool board_handler::sameMod16(uint8_t* solved, uint8_t* state) {
+bool board_handler::same16(uint8_t *solved, uint8_t *state) {
+    __m128i solvedBoard = _mm_load_si128((__m128i*) solved);
+    __m128i stateBoard = _mm_load_si128((__m128i*) state);
+    __m128i equal = _mm_cmpeq_epi32(stateBoard, solvedBoard);
+    uint16_t test = _mm_movemask_epi8(equal);
+    return (test == 0xffff);
+}
+
+bool board_handler::sameMod8(uint8_t* solved, uint8_t* state) {
     auto solvedPtr = (uint64_t *)solved,
          statePtr = (uint64_t *)state;
     uint8_t steps = board::len >> 3;
@@ -96,4 +104,5 @@ bool board_handler::sameAny(uint8_t* solved, uint8_t* state) {
     }
     return retVal;
 }
+
 

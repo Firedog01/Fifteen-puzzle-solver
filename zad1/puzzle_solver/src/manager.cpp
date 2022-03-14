@@ -1,48 +1,47 @@
 #include "../lib/manager.h"
 
 
-manager::manager(char **argv) : info() {
-
+manager::manager(const char **argv) : info() {
     std::string strategy(argv[1]);
     file_start_state startStateHandler(argv[3]);
 
     board* start_state = startStateHandler.getState();
     uint8_t* solved_table = board_handler::getSolvedTable();
+    bool (*same)(uint8_t* first, uint8_t* second);
+    same = &board_handler::sameMod8;
+
+//    if(board::len == 16) {
+//        same = &board_handler::same16;
+//    } else if(board::len % 8 == 0) {
+//        same = &board_handler::sameMod8;
+//    } else if(board::len % 4 == 0) {
+//        same = &board_handler::sameMod4;
+//    } else {
+//        same = &board_handler::sameAny;
+//    }
 
     ops::operators* solution = nullptr;
-    int solution_len = 0;
+    int solution_len = -1;
+    int states_processed = 0;
+    int states_visited = 0;
+
 
     if(strategy == "bfs") {
         ops::operators* order = getOrder(argv[2]); // ops::operators[4]
-        std::queue<board*> q_to_process; // queue is silent
-        std::vector<board*> visited; //
-        q_to_process.emplace(start_state);
-
-        // same is function pointer. There are different functions depending on table_length
-        bool (*same)(uint8_t* first, uint8_t* second);
-        if((board::len + 1) % 8 == 0) {
-            same = &board_handler::sameMod16;
-        } else if((board::len + 1) % 4 == 0) {
-            same = &board_handler::sameMod4;
-        } else {
-            same = &board_handler::sameAny;
-        }
-        int iterations = -1;
+        std::queue<board*> q_to_process;
+        std::vector<board*> visited;
         board* cur_state;
-        while(true) {
-            if(q_to_process.empty()) {
-                std::cout << "no solution found!\n";
-                // todo
-                break;
-            }
+
+        q_to_process.emplace(start_state);
+        states_processed++;
+
+        while(!q_to_process.empty()) {
             cur_state = q_to_process.front();
-            if(iterations < cur_state->pathLen) {
-                iterations++;
-                std::cout << iterations << '\n';
-            }
+            states_processed++;
 
             if(same(solved_table, cur_state->table)) {
                 // solution found!
+//                std::cout << "solution found\n";
                 solution = cur_state->path;
                 solution_len = cur_state->pathLen;
                 break;
@@ -65,11 +64,11 @@ manager::manager(char **argv) : info() {
                         delete(new_board);
                     }
                 }
+                states_visited += 4;
             }
             visited.push_back(cur_state);
             q_to_process.pop();
         }
-
 
     } else if(strategy == "dfs") {
         auto order = getOrder(argv[2]);
@@ -79,25 +78,21 @@ manager::manager(char **argv) : info() {
     }
     delete(start_state);
     auto execTime = info.getExecutionTime();
-    std::cout << execTime << '\n';
+//    std::cout << execTime << '\n';
 
     std::ofstream solutionFile(argv[4]);
+    solutionFile << solution_len << "\n";
     if(solution != nullptr) {
-        solutionFile << solution_len << '\n';
-        for(int i = 0; i < solution_len; i++, solution++) {
-            solutionFile << *solution;
-        }
-        solutionFile << '\n';
-    } else {
-        solutionFile << "-1\n";
+        solutionFile << getStrPath(solution, solution_len);
     }
     solutionFile.close();
 
     std::ofstream infoFile(argv[5]);
-    infoFile << info.getLength() << '\n'
-             << info.getStatesVisited() << '\n'
-             << info.getStatesProcessed() << '\n'
-             << info.getMaxDepth() << '\n'
+    infoFile
+//             << solution_len << '\n'
+//             << states_visited << '\n'
+//             << states_processed << '\n'
+//             << info.getMaxDepth() << '\n'
              << std::setprecision(3) << std::fixed << execTime << '\n';
     infoFile.close();
 
@@ -150,25 +145,26 @@ ops::heuristics manager::getHeuristic(std::string s) {
     return ops::error;
 }
 
-void manager::displayPath(board *cur_state) {
-    auto cursor = cur_state->path;
-    for(int i = 0; i < cur_state->pathLen; i++, cursor++) {
-        switch(*cursor) {
+std::string manager::getStrPath(ops::operators * ops, uint8_t len) {
+    std::stringstream ss;
+    for(int i = 0; i < len; i++, ops++) {
+        switch(*ops) {
             case ops::L:
-                std::cout << "L";
+                ss << "L";
                 break;
             case ops::R:
-                std::cout << "R";
+                ss << "R";
                 break;
             case ops::D:
-                std::cout << "D";
+                ss << "D";
                 break;
             case ops::U:
-                std::cout << "U";
+                ss << "U";
                 break;
         }
     }
-    std::cout << "\n";
+    ss << "\n";
+    return ss.str();
 }
 
 void manager::displayBoard(uint8_t *state) {

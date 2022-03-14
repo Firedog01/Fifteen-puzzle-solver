@@ -64,3 +64,74 @@ bfs wer 1:
 
 stan odwiedzony - włożony do kolejki, na liście stanów otwartych
 stan przetworzony - odpytany o sąsiadów
+
+---------------------------- lekcja 2
+lista stanów otwartych - jeszcze nie przetworzeni ale wrzucony do kolejki
+
+bfs wer 2:
+    s - stan początkowy
+    Q = queue
+    T = set
+    Q.enqueue(s)
+    while !Q.isempty():
+        v = Q.dequeue()
+        if v is solution:
+            return success
+        T.add(v)
+        for n in neighbours(v):
+            if !T.has(n) and !Q.has(n):
+                Q.enqueue(n)
+    return failure
+
+bfs wer 3:
+    s - stan początkowy
+    if s is solution:
+        return success
+    Q = queue
+    U = set
+    Q.enqueue(s)
+    while !Q.isempty():
+        v = Q.dequeue()
+        for n in neighbours(v):
+            if n is solution:
+                return success
+            if !U.has(n):
+                Q.enqueue(n)
+                U.add(v)
+    return failure
+
+// uniform cost search
+
+dfs iteracyjne przepisana rekurencja:
+    v - stan początkowy
+    G - goal
+    dfs(G, v):
+        T - lista stanów otwartych (set)
+        S - lista stanów zamkniętych (stack)
+        while !S.empty():
+            v = S.pop()
+            if v is solution:
+                return success
+            if !T.has(n):
+                T.add(v)
+                for n in neghbours(v).reverse():
+                    S.push(n)
+        return failure
+
+dfs nowa implementacja z rozbieżnościami co do rekurencji:
+    v - stan początkowy
+    G - goal
+    dfs(G, s):
+        if s is solution:
+            return success
+        T - lista stanów otwartych (set)
+        S - lista stanów zamkniętych (stack)
+        while !S.empty():
+            v = S.pop()
+            if !T.has(n):
+                T.add(v)
+                for n in neghbours(v).reverse():
+                    if n is solution:
+                        return success
+                    S.push(n)
+        return failure

@@ -3,13 +3,22 @@
 #include <Windows.h>
 #include <iostream>
 #include <fstream>
+#include <thread>
+#include "../puzzle_solver/lib/manager.h"
 #include "../puzzle_solver/lib/info/info_bundle.h"
 
+void windowsProcess(char** argv);
 
 int main(int argc, char *argv[]) {
+    windowsProcess(argv);
+
+    return 0;
+}
+
+void windowsProcess(char** argv) {
     info_bundle info;
     std::string exe_path(std::regex_replace(argv[0], std::regex("automated_call"), "puzzle_solver"));
-    std::string path_with_args(exe_path + " bfs LRUD ../../start_state.txt end_state.txt extra_info.txt");
+    std::string path_with_args(exe_path + " bfs LRUD ../../files/start_state.txt ../../files/end_state.txt ../../files/extra_info.txt");
     // https://stackoverflow.com/questions/12862739/convert-string-to-char
     char* args = (char *)alloca(path_with_args.size() + 1);
     memcpy(args, path_with_args.c_str(), path_with_args.size() + 1);
@@ -18,12 +27,15 @@ int main(int argc, char *argv[]) {
     std::string buffer;
 
     double sum = 0;
-    int len = 20000;
+    int len = 100;
 
     for(int i = 0; i < len; i++) {
         // additional information
         STARTUPINFOA si;
         PROCESS_INFORMATION pi;
+        if(i % 1 == 0) {
+            std::cout << i << '\n';
+        }
 
         // set the size of the structures
         ZeroMemory(&si, sizeof(si));
@@ -43,9 +55,9 @@ int main(int argc, char *argv[]) {
                 &si,            // Pointer to STARTUPINFO structure
                 &pi           // Pointer to PROCESS_INFORMATION structure
         );
-        WaitForSingleObject(pi.hProcess, 10000);
+        WaitForSingleObject(pi.hProcess, INFINITE);
 
-        file.open("../../output.txt");
+        file.open("../../files/extra_info.txt");
         file >> buffer;
         file.close();
         sum += std::stod(buffer);
@@ -55,6 +67,4 @@ int main(int argc, char *argv[]) {
     }
     std::cout << "suma: " << sum << " ms, srednio: " << sum / len << " ms\n"
               << "total elapsed: " << info.getExecutionTime() / 1000 << " s\n";
-
-    return 0;
 }
