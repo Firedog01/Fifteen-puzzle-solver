@@ -6,27 +6,33 @@
 #include <iostream>
 #include "../includes.h"
 
+// key of hashmap
 struct board {
+    uint8_t* table;
+    uint8_t zeroIdx;
+    ops::operators lastOp;
+
+    explicit board(uint8_t* ptr);
+    board(uint8_t* ptr, uint8_t zeroIdx);
+    explicit board(const board* o); // copy constructor
+    board(const board* o, ops::operators newOp); // copy constructor with setting last op
+    ~board();
+
+    // for hashing function
+    bool operator==(const board &other) const;
+    // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
+
     static uint8_t len;
     static uint8_t width;
     static uint8_t height;
 
-    uint8_t* table;
-    uint8_t zeroIdx;
-    ops::operators* path;
-    uint16_t pathLen;
-    ops::operators lastOp;
-
-    explicit board(const board* o); // copy constructor
-    // copy and add new operator
-    // note: this does not move zero in table, just adds to path
-    board(const board* o, ops::operators newOp);
-    explicit board(uint8_t* ptr);
-    board(uint8_t* ptr, uint8_t zeroIdx, ops::operators* path, uint16_t pathLen);
-    ~board();
-
-    // for hashing function
-    // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
+    static bool (*same)(uint8_t* first, uint8_t* second);
+    static bool sameMod8(uint8_t * solved, uint8_t * state);
+    static bool sameMod4(uint8_t * solved, uint8_t * state);
+    static bool sameAny(uint8_t * solved, uint8_t * state);
+    // needs to be called before any comparison
+    // but after setting of board::len
+    static void init_same();
 };
 
 

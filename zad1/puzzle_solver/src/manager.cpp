@@ -90,18 +90,6 @@ void manager::findSolution() {
     file_start_state startStateHandler(start_state_file);
     board* start_state = startStateHandler.getState();
     uint8_t* solved_table = board_handler::getSolvedTable();
-    bool (*same)(uint8_t* first, uint8_t* second);
-//    same = &board_handler::sameMod8;
-//    if(board::len == 16) {
-//        same = &board_handler::same16;
-//    } else
-    if(board::len % 8 == 0) {
-        same = &board_handler::sameMod8;
-    } else if(board::len % 4 == 0) {
-        same = &board_handler::sameMod4;
-    } else {
-        same = &board_handler::sameAny;
-    }
 
     ops::operators* solution = nullptr;
     int solution_len = -1;
@@ -122,7 +110,7 @@ void manager::findSolution() {
             cur_state = q_to_process.front();
             states_processed++;
 
-            if(same(solved_table, cur_state->table)) {
+            if(board::same(solved_table, cur_state->table)) {
                 // solution found!
 //                std::cout << "solution found\n";
                 solution = cur_state->path;

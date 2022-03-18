@@ -58,51 +58,5 @@ uint8_t *board_handler::getSolvedTable() {
     return solved_table;
 }
 
-bool board_handler::same16(uint8_t *solved, uint8_t *state) {
-    __m128i solvedBoard = _mm_load_si128((__m128i*) solved);
-    __m128i stateBoard = _mm_load_si128((__m128i*) state);
-    __m128i equal = _mm_cmpeq_epi32(stateBoard, solvedBoard);
-    uint16_t test = _mm_movemask_epi8(equal);
-    return (test == 0xffff);
-}
-
-bool board_handler::sameMod8(uint8_t* solved, uint8_t* state) {
-    auto solvedPtr = (uint64_t *)solved,
-         statePtr = (uint64_t *)state;
-    uint8_t steps = board::len >> 3;
-    bool retVal = true;
-    for(uint8_t i = 0; i < steps; i++, solvedPtr++, statePtr++) {
-        if((*solvedPtr ^ *statePtr) != 0) { // 0 if same
-            retVal = false;
-        }
-    }
-    return retVal;
-}
-
-bool board_handler::sameMod4(uint8_t* solved, uint8_t* state) {
-    auto solvedPtr = (uint32_t *)solved,
-         statePtr = (uint32_t *)state;
-    uint8_t steps = board::len >> 2;
-    bool retVal = true;
-    for(uint8_t i = 0; i < steps; i++, solvedPtr++, statePtr++) {
-        if(*solvedPtr ^ *statePtr) {
-            retVal = false;
-        }
-    }
-    return retVal;
-}
-
-bool board_handler::sameAny(uint8_t* solved, uint8_t* state) {
-    uint8_t *solvedPtr = solved,
-            *statePtr = state;
-
-    bool retVal = true;
-    for(uint8_t i = 0; i < board::len; i++, solvedPtr++, statePtr++) {
-        if(*solvedPtr ^ *statePtr) {
-            retVal = false;
-        }
-    }
-    return retVal;
-}
 
 

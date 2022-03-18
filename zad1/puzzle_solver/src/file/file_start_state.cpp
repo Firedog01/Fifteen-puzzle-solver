@@ -23,6 +23,7 @@ file_start_state::file_start_state(const std::string& path) {
 }
 
 board* file_start_state::getState() {
+    board::init_same();
     return new board(state);
 }
 
