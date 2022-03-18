@@ -1,102 +1,13 @@
 #include "../lib/manager.h"
 
 
-manager::manager(const char **argv) : info() {
-    std::string strategy(argv[1]);
-    file_start_state startStateHandler(argv[3]);
-
-    board* start_state = startStateHandler.getState();
-    uint8_t* solved_table = board_handler::getSolvedTable();
-    bool (*same)(uint8_t* first, uint8_t* second);
-    same = &board_handler::sameMod8;
-
-//    if(board::len == 16) {
-//        same = &board_handler::same16;
-//    } else if(board::len % 8 == 0) {
-//        same = &board_handler::sameMod8;
-//    } else if(board::len % 4 == 0) {
-//        same = &board_handler::sameMod4;
-//    } else {
-//        same = &board_handler::sameAny;
-//    }
-
-    ops::operators* solution = nullptr;
-    int solution_len = -1;
-    int states_processed = 0;
-    int states_visited = 0;
+manager::manager(char **argv) : info(), strategy(argv[1]), param(argv[2]), start_state_file(argv[3]),
+                                result_file(argv[4]), extra_info_file(argv[5]) {}
 
 
-    if(strategy == "bfs") {
-        ops::operators* order = getOrder(argv[2]); // ops::operators[4]
-        std::queue<board*> q_to_process;
-        std::vector<board*> visited;
-        board* cur_state;
-
-        q_to_process.emplace(start_state);
-        states_processed++;
-
-        while(!q_to_process.empty()) {
-            cur_state = q_to_process.front();
-            states_processed++;
-
-            if(same(solved_table, cur_state->table)) {
-                // solution found!
-//                std::cout << "solution found\n";
-                solution = cur_state->path;
-                solution_len = cur_state->pathLen;
-                break;
-            } else {
-                ops::operators* op = order;
-                for(int i = 0; i < 4; i++, op++) {
-                    auto new_board = board_handler::createMoved(cur_state, *op);
-                    if(new_board == nullptr) {
-                        continue;
-                    }
-                    auto found = std::find_if(
-                            visited.begin(),
-                            visited.end(),
-                            [same, new_board](board* i) {
-                                return same(i->table, new_board->table);
-                            });
-                    if(found == visited.end()) { // not found
-                        q_to_process.push(new_board);
-                    } else {
-                        delete(new_board);
-                    }
-                }
-                states_visited += 4;
-            }
-            visited.push_back(cur_state);
-            q_to_process.pop();
-        }
-
-    } else if(strategy == "dfs") {
-        auto order = getOrder(argv[2]);
-
-    } else if(strategy == "astr") {
-        auto heuristic = getHeuristic(argv[2]);
-    }
-    delete(start_state);
-    auto execTime = info.getExecutionTime();
-//    std::cout << execTime << '\n';
-
-    std::ofstream solutionFile(argv[4]);
-    solutionFile << solution_len << "\n";
-    if(solution != nullptr) {
-        solutionFile << getStrPath(solution, solution_len);
-    }
-    solutionFile.close();
-
-    std::ofstream infoFile(argv[5]);
-    infoFile
-//             << solution_len << '\n'
-//             << states_visited << '\n'
-//             << states_processed << '\n'
-//             << info.getMaxDepth() << '\n'
-             << std::setprecision(3) << std::fixed << execTime << '\n';
-    infoFile.close();
-
-}
+manager::manager(std::string strategy, std::string param, std::string s_file, std::string e_file, std::string ex_file):
+        info(), strategy(strategy), param(param), start_state_file(s_file), result_file(e_file),
+        extra_info_file(ex_file) {}
 
 /**
  * Creates new table that needs to be deleted.
@@ -173,4 +84,98 @@ void manager::displayBoard(uint8_t *state) {
         if(i % 4 == 3)
             std::cout << '\n';
     }
+}
+
+void manager::findSolution() {
+    file_start_state startStateHandler(start_state_file);
+    board* start_state = startStateHandler.getState();
+    uint8_t* solved_table = board_handler::getSolvedTable();
+    bool (*same)(uint8_t* first, uint8_t* second);
+//    same = &board_handler::sameMod8;
+//    if(board::len == 16) {
+//        same = &board_handler::same16;
+//    } else
+    if(board::len % 8 == 0) {
+        same = &board_handler::sameMod8;
+    } else if(board::len % 4 == 0) {
+        same = &board_handler::sameMod4;
+    } else {
+        same = &board_handler::sameAny;
+    }
+
+    ops::operators* solution = nullptr;
+    int solution_len = -1;
+    int states_processed = 0;
+    int states_visited = 0;
+
+
+    if(strategy == "bfs") {
+        ops::operators* order = getOrder(param); // ops::operators[4]
+        std::queue<board*> q_to_process;
+        std::vector<board*> visited;
+        board* cur_state;
+
+        q_to_process.emplace(start_state);
+        states_processed++;
+
+        while(!q_to_process.empty()) {
+            cur_state = q_to_process.front();
+            states_processed++;
+
+            if(same(solved_table, cur_state->table)) {
+                // solution found!
+//                std::cout << "solution found\n";
+                solution = cur_state->path;
+                solution_len = cur_state->pathLen;
+                break;
+            } else {
+                ops::operators* op = order;
+                for(int i = 0; i < 4; i++, op++) {
+                    auto new_board = board_handler::createMoved(cur_state, *op);
+                    if(new_board == nullptr) {
+                        continue;
+                    }
+                    auto found = std::find_if(
+                            visited.begin(),
+                            visited.end(),
+                            [same, new_board](board* i) {
+                                return same(i->table, new_board->table);
+                            });
+                    if(found == visited.end()) { // not found
+                        q_to_process.push(new_board);
+                    } else {
+                        delete(new_board);
+                    }
+                }
+                states_visited += 4;
+            }
+            visited.push_back(cur_state);
+            q_to_process.pop();
+        }
+
+    } else if(strategy == "dfs") {
+        auto order = getOrder(param);
+
+    } else if(strategy == "astr") {
+        auto heuristic = getHeuristic(param);
+    }
+    delete(start_state);
+    auto execTime = info.getExecutionTime();
+//    std::cout << execTime << '\n';
+
+    std::ofstream solutionFile(result_file);
+    solutionFile << solution_len << "\n";
+    if(solution != nullptr) {
+        solutionFile << getStrPath(solution, solution_len);
+    }
+    solutionFile.close();
+
+    std::ofstream infoFile(extra_info_file);
+    infoFile
+//             << solution_len << '\n'
+//             << states_visited << '\n'
+//             << states_processed << '\n'
+//             << info.getMaxDepth() << '\n'
+            << std::setprecision(3) << std::fixed << execTime << '\n';
+    infoFile.close();
 }

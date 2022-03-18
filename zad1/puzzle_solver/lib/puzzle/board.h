@@ -24,6 +24,9 @@ struct board {
     explicit board(uint8_t* ptr);
     board(uint8_t* ptr, uint8_t zeroIdx, ops::operators* path, uint16_t pathLen);
     ~board();
+
+    // for hashing function
+    // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
 };
 
 
