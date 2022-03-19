@@ -6,5 +6,8 @@ namespace ops {
     enum operators {L, R, U, D, Undefined};
     enum heuristics {hamm, manh, error};
 }
+class board;
+class op_path;
+typedef std::pair<board, op_path> state;
 
 #endif //ZAD1_INCLUDES_H

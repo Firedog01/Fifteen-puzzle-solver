@@ -9,10 +9,10 @@
 #include "includes.h"
 #include "file/file_start_state.h"
 #include "info/info_bundle.h"
-#include "puzzle/board.h"
-#include "puzzle/board_handler.h"
+#include "strategy/bfs.h"
 
 class manager {
+
     info_bundle info;
     std::string strategy,
                 param,
@@ -23,11 +23,10 @@ class manager {
     static ops::operators* getOrder(std::string s);
     static ops::heuristics getHeuristic(std::string s);
 
-    std::string getStrPath(ops::operators * ops, uint8_t len);
     void displayBoard(uint8_t * state);
 
 public:
-    manager(std::string strategy, std::string param, std::string s_file, std::string e_file, std::string ex_file);
+    manager(std::string strategy, std::string param, std::string s_file, std::string r_file, std::string ex_file);
     manager(char** argv);
 
     void findSolution();

@@ -10,12 +10,10 @@
 struct board {
     uint8_t* table;
     uint8_t zeroIdx;
-    ops::operators lastOp;
 
     explicit board(uint8_t* ptr);
-    board(uint8_t* ptr, uint8_t zeroIdx);
     explicit board(const board* o); // copy constructor
-    board(const board* o, ops::operators newOp); // copy constructor with setting last op
+    board(uint8_t* ptr, uint8_t zeroIdx);
     ~board();
 
     // for hashing function

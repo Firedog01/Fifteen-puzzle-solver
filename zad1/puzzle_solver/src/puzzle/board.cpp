@@ -4,7 +4,7 @@ uint8_t board::len;
 uint8_t board::width;
 uint8_t board::height;
 
-board::board(uint8_t *ptr) : table(ptr), lastOp(ops::Undefined) {
+board::board(uint8_t *ptr) : table(ptr) {
     int i = 0;
     uint8_t* cursor = table;
     while(i < len && !!*cursor) {
@@ -14,18 +14,13 @@ board::board(uint8_t *ptr) : table(ptr), lastOp(ops::Undefined) {
     zeroIdx = i;
 }
 
-board::board(const board *o) : zeroIdx(o->zeroIdx), lastOp(ops::Undefined) {
-    table = new uint8_t[len];
-    std::copy(o->table, o->table + len, table);
-}
-
-board::board(const board* o, ops::operators newOp) : zeroIdx(o->zeroIdx), lastOp(newOp) {
+board::board(const board *o) : zeroIdx(o->zeroIdx) {
     table = new uint8_t[len];
     std::copy(o->table, o->table + len, table);
 }
 
 board::board(uint8_t *ptr, uint8_t zeroIdx) :
-    table(ptr), zeroIdx(zeroIdx), lastOp(ops::Undefined) {}
+    table(ptr), zeroIdx(zeroIdx) {}
 
 
 board::~board() {

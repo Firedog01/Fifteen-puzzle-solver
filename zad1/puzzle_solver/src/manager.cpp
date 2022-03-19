@@ -56,28 +56,6 @@ ops::heuristics manager::getHeuristic(std::string s) {
     return ops::error;
 }
 
-std::string manager::getStrPath(ops::operators * ops, uint8_t len) {
-    std::stringstream ss;
-    for(int i = 0; i < len; i++, ops++) {
-        switch(*ops) {
-            case ops::L:
-                ss << "L";
-                break;
-            case ops::R:
-                ss << "R";
-                break;
-            case ops::D:
-                ss << "D";
-                break;
-            case ops::U:
-                ss << "U";
-                break;
-        }
-    }
-    ss << "\n";
-    return ss.str();
-}
-
 void manager::displayBoard(uint8_t *state) {
     for(int i = 0; i < board::len; i++) {
         std::cout << +state[i] << " ";
@@ -88,82 +66,40 @@ void manager::displayBoard(uint8_t *state) {
 
 void manager::findSolution() {
     file_start_state startStateHandler(start_state_file);
-    board* start_state = startStateHandler.getState();
-    uint8_t* solved_table = board_handler::getSolvedTable();
-
-    ops::operators* solution = nullptr;
-    int solution_len = -1;
-    int states_processed = 0;
-    int states_visited = 0;
-
+    state* start_state = startStateHandler.getState();
+    op_path solution;
 
     if(strategy == "bfs") {
-        ops::operators* order = getOrder(param); // ops::operators[4]
-        std::queue<board*> q_to_process;
-        std::vector<board*> visited;
-        board* cur_state;
-
-        q_to_process.emplace(start_state);
-        states_processed++;
-
-        while(!q_to_process.empty()) {
-            cur_state = q_to_process.front();
-            states_processed++;
-
-            if(board::same(solved_table, cur_state->table)) {
-                // solution found!
-//                std::cout << "solution found\n";
-                solution = cur_state->path;
-                solution_len = cur_state->pathLen;
-                break;
-            } else {
-                ops::operators* op = order;
-                for(int i = 0; i < 4; i++, op++) {
-                    auto new_board = board_handler::createMoved(cur_state, *op);
-                    if(new_board == nullptr) {
-                        continue;
-                    }
-                    auto found = std::find_if(
-                            visited.begin(),
-                            visited.end(),
-                            [same, new_board](board* i) {
-                                return same(i->table, new_board->table);
-                            });
-                    if(found == visited.end()) { // not found
-                        q_to_process.push(new_board);
-                    } else {
-                        delete(new_board);
-                    }
-                }
-                states_visited += 4;
-            }
-            visited.push_back(cur_state);
-            q_to_process.pop();
+        ops::operators* order = getOrder(param); // length: [4]
+        solution = bfs::algorithm(start_state, order, info);
+        if (solution.len != -1) {
+            // solution found!
         }
-
     } else if(strategy == "dfs") {
         auto order = getOrder(param);
 
     } else if(strategy == "astr") {
         auto heuristic = getHeuristic(param);
     }
-    delete(start_state);
-    auto execTime = info.getExecutionTime();
+    delete start_state;
+    double execTime = info.getExecutionTime();
 //    std::cout << execTime << '\n';
 
+    // result file
     std::ofstream solutionFile(result_file);
-    solutionFile << solution_len << "\n";
-    if(solution != nullptr) {
-        solutionFile << getStrPath(solution, solution_len);
+    solutionFile << solution.len << "\n";
+    if(solution.len != -1) {
+        solutionFile << solution.toString();
     }
     solutionFile.close();
 
+    // extra info file
     std::ofstream infoFile(extra_info_file);
     infoFile
-//             << solution_len << '\n'
-//             << states_visited << '\n'
-//             << states_processed << '\n'
-//             << info.getMaxDepth() << '\n'
-            << std::setprecision(3) << std::fixed << execTime << '\n';
+            << solution.len << '\n'
+             << info.statesProcessed << '\n'
+             << info.statesVisited << '\n'
+             << info.maxDepth << '\n'
+             << std::setprecision(3) << std::fixed << execTime << '\n';
     infoFile.close();
 }

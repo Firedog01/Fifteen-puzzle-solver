@@ -3,15 +3,16 @@
 
 #include <cstdint>
 #include <iostream>
-#include <xmmintrin.h>
+#include <utility>
 #include "../includes.h"
 #include "board.h"
+#include "op_path.h"
 
 
 class board_handler {
     board_handler() = default; // static class
 public:
-    static board* createMoved(board* old_board, ops::operators op);
+    static state* new_moved(std::pair<board, op_path>* old_state, ops::operators op);
     static uint8_t* getSolvedTable();
 };
 

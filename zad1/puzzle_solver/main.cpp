@@ -6,7 +6,6 @@ struct test {
     ~test() {
         this->a = 0;
         std::cout << "destructor called\n";
-
     }
 };
 
@@ -19,7 +18,7 @@ int main(int argc, char *argv[]) {
 //    std::cout << "v[0]: " << v.front().a << "t: " << &v.front() << '\n';
 //    v.pop(); // pop calls destructor.
 //    std::cout << "a pop: " << t->a << '\n';
-
+//    return 0;
 
     if(argc != 6) {
         std::cout << "Incorrect number of parameters!\n"

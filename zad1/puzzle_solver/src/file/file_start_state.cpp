@@ -1,4 +1,5 @@
 #include "../../lib/file/file_start_state.h"
+#include "../../lib/puzzle/op_path.h"
 
 
 file_start_state::file_start_state(const std::string& path) {
@@ -9,8 +10,8 @@ file_start_state::file_start_state(const std::string& path) {
         board::width -= '0';
         board::height -= '0';
         board::len = board::width * board::height;
-        state = new uint8_t[board::len];
-        auto cursor = state;
+        table = new uint8_t[board::len];
+        auto cursor = table;
         std::string buff;
         for(uint8_t i = 0; i < board::len; i++, cursor++) {
             file >> buff;
@@ -22,12 +23,14 @@ file_start_state::file_start_state(const std::string& path) {
     }
 }
 
-board* file_start_state::getState() {
+state* file_start_state::getState() {
     board::init_same();
-    return new board(state);
+    board b = board(table);
+    op_path p;
+    return new std::pair(b, p);
 }
 
 file_start_state::~file_start_state() {
-    delete[](state);
+    delete[](table);
 }
 

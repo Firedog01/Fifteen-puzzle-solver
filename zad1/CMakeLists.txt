@@ -13,7 +13,9 @@ set(SOURCE_FILES
         puzzle_solver/src/file/file_start_state.cpp
         puzzle_solver/src/file/file_solution.cpp
         puzzle_solver/src/manager.cpp
-        puzzle_solver/src/puzzle/board.cpp puzzle_solver/src/puzzle/board_handler.cpp puzzle_solver/lib/puzzle/board_handler.h puzzle_solver/lib/puzzle/board_hash.h)
+        puzzle_solver/src/puzzle/board.cpp
+        puzzle_solver/src/puzzle/board_handler.cpp
+        puzzle_solver/src/puzzle/op_path.cpp)
 
 add_library(zad1_lib ${SOURCE_FILES})
 

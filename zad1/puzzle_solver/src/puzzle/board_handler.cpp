@@ -1,52 +1,5 @@
 #include "../../lib/puzzle/board_handler.h"
 
-board* board_handler::createMoved(board* old_board, ops::operators op) {
-
-    uint8_t movedZeroIdx = old_board->zeroIdx;
-    switch(op) {
-        case ops::L:
-            if(old_board->zeroIdx % board::width == 0)
-                return nullptr;
-            if(old_board->lastOp == ops::R)
-                return nullptr;
-            movedZeroIdx--;
-            break;
-        case ops::R:
-            if(old_board->zeroIdx % board::width == board::width - 1)
-                return nullptr;
-            if(old_board->lastOp == ops::L)
-                return nullptr;
-            movedZeroIdx++;
-            break;
-        case ops::U:
-            if(old_board->zeroIdx < board::width)
-                return nullptr;
-            if(old_board->lastOp == ops::D)
-                return nullptr;
-            movedZeroIdx -= board::width;
-            break;
-        case ops::D:
-            if(old_board->zeroIdx > (board::len - board::width))
-                return nullptr;
-            if(old_board->lastOp == ops::U)
-                return nullptr;
-            movedZeroIdx += board::width;
-            break;
-        default: // like that ever gonna happen
-            return nullptr;
-    }
-
-    // Creating new board after checking legality of move to avoid memory leak
-    auto new_board = new board(old_board, op);
-    uint8_t *ptr_oz = new_board->table, *ptr_nz = new_board->table;
-    ptr_oz += old_board->zeroIdx;
-    ptr_nz += movedZeroIdx;
-    *ptr_oz = *ptr_nz;
-    *ptr_nz = 0;
-    new_board->zeroIdx = movedZeroIdx;
-    return new_board;
-}
-
 
 uint8_t *board_handler::getSolvedTable() {
     auto solved_table = new uint8_t[board::len];
@@ -56,6 +9,53 @@ uint8_t *board_handler::getSolvedTable() {
     }
     *solved_cursor = 0; // last element is 0
     return solved_table;
+}
+
+state *board_handler::new_moved(std::pair<board, op_path> *old_state, ops::operators op) {
+    uint8_t movedZeroIdx = old_state->first.zeroIdx;
+    switch(op) {
+        case ops::L:
+            if(old_state->first.zeroIdx % board::width == 0)
+                return nullptr;
+            if(old_state->second.lastOp == ops::R)
+                return nullptr;
+            movedZeroIdx--;
+            break;
+        case ops::R:
+            if(old_state->first.zeroIdx % board::width == board::width - 1)
+                return nullptr;
+            if(old_state->second.lastOp == ops::L)
+                return nullptr;
+            movedZeroIdx++;
+            break;
+        case ops::U:
+            if(old_state->first.zeroIdx < board::width)
+                return nullptr;
+            if(old_state->second.lastOp == ops::D)
+                return nullptr;
+            movedZeroIdx -= board::width;
+            break;
+        case ops::D:
+            if(old_state->first.zeroIdx > (board::len - board::width))
+                return nullptr;
+            if(old_state->second.lastOp == ops::U)
+                return nullptr;
+            movedZeroIdx += board::width;
+            break;
+        case ops::Undefined:
+            break;
+    }
+    board moved_board(old_state->first);
+    op_path moved_path(old_state->second, op);
+    uint8_t *ptr_oz = moved_board.table,
+            *ptr_nz = moved_board.table;
+    ptr_oz += old_state->first.zeroIdx;
+    ptr_nz += movedZeroIdx;
+    *ptr_oz = *ptr_nz;
+    *ptr_nz = 0;
+    moved_board.zeroIdx = movedZeroIdx;
+
+    return new state(moved_board, moved_path);
 }
 
 
