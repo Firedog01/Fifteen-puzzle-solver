@@ -19,7 +19,8 @@ int main(int argc, char *argv[]) {
 //    v.pop(); // pop calls destructor.
 //    std::cout << "a pop: " << t->a << '\n';
 //    return 0;
-
+    std::cout << "sizeof(std::size_t): " << sizeof(std::size_t) << '\n'
+              << "sizeof(uint64_t): " << sizeof(uint64_t) << '\n';
     if(argc != 6) {
         std::cout << "Incorrect number of parameters!\n"
                   << "Every call should have exactly 5 arguments.\n";

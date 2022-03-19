@@ -33,5 +33,4 @@ struct board {
     static void init_same();
 };
 
-
 #endif //ZAD1_BOARD_H

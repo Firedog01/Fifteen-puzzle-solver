@@ -11,7 +11,7 @@ uint8_t *board_handler::getSolvedTable() {
     return solved_table;
 }
 
-state *board_handler::new_moved(std::pair<board, op_path> *old_state, ops::operators op) {
+state* board_handler::new_moved(std::pair<board, op_path> *old_state, ops::operators op) {
     uint8_t movedZeroIdx = old_state->first.zeroIdx;
     switch(op) {
         case ops::L:
@@ -54,8 +54,9 @@ state *board_handler::new_moved(std::pair<board, op_path> *old_state, ops::opera
     *ptr_oz = *ptr_nz;
     *ptr_nz = 0;
     moved_board.zeroIdx = movedZeroIdx;
-
-    return new state(moved_board, moved_path);
+    state* ret_state = new state(moved_board, moved_path);
+    std::cout << "zeroidx: " << +ret_state->first.zeroIdx << '\n';
+    return ret_state;
 }
 
 

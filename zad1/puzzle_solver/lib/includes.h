@@ -1,6 +1,8 @@
 #ifndef ZAD1_INCLUDES_H
 #define ZAD1_INCLUDES_H
 
+#include <cstdint>
+
 // todo: rename this namespace
 namespace ops {
     enum operators {L, R, U, D, Undefined};
@@ -9,5 +11,7 @@ namespace ops {
 class board;
 class op_path;
 typedef std::pair<board, op_path> state;
+//typedef bool (*same_func)(uint8_t* first, uint8_t* second);
+//same_func same;
 
 #endif //ZAD1_INCLUDES_H

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <utility>
 #include "../includes.h"
-#include "board.h"
+#include "board_hash.h"
 #include "op_path.h"
 
 

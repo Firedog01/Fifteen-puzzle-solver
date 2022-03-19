@@ -1,12 +1,7 @@
 #ifndef ZAD1_MANAGER_H
 #define ZAD1_MANAGER_H
 
-#include <algorithm>
-#include <string>
 #include <iomanip>
-#include <iostream>
-#include <queue>
-#include "includes.h"
 #include "file/file_start_state.h"
 #include "info/info_bundle.h"
 #include "strategy/bfs.h"
@@ -23,7 +18,6 @@ class manager {
     static ops::operators* getOrder(std::string s);
     static ops::heuristics getHeuristic(std::string s);
 
-    void displayBoard(uint8_t * state);
 
 public:
     manager(std::string strategy, std::string param, std::string s_file, std::string r_file, std::string ex_file);

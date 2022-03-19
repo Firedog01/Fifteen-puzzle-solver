@@ -6,8 +6,8 @@ manager::manager(char **argv) : info(), strategy(argv[1]), param(argv[2]), start
 
 
 manager::manager(std::string strategy, std::string param, std::string s_file, std::string e_file, std::string ex_file):
-        info(), strategy(strategy), param(param), start_state_file(s_file), result_file(e_file),
-        extra_info_file(ex_file) {}
+        info(), strategy(std::move(strategy)), param(std::move(param)), start_state_file(std::move(s_file)),
+        result_file(std::move(e_file)), extra_info_file(std::move(ex_file)) {}
 
 /**
  * Creates new table that needs to be deleted.
@@ -56,22 +56,19 @@ ops::heuristics manager::getHeuristic(std::string s) {
     return ops::error;
 }
 
-void manager::displayBoard(uint8_t *state) {
-    for(int i = 0; i < board::len; i++) {
-        std::cout << +state[i] << " ";
-        if(i % 4 == 3)
-            std::cout << '\n';
-    }
-}
+
 
 void manager::findSolution() {
     file_start_state startStateHandler(start_state_file);
-    state* start_state = startStateHandler.getState();
+    state start_state = startStateHandler.getState();
+    bfs::displayBoard(start_state.first.table);
     op_path solution;
 
     if(strategy == "bfs") {
         ops::operators* order = getOrder(param); // length: [4]
+        std::cout << "before algo\n";
         solution = bfs::algorithm(start_state, order, info);
+        std::cout << "after algo\n";
         if (solution.len != -1) {
             // solution found!
         }
@@ -81,7 +78,6 @@ void manager::findSolution() {
     } else if(strategy == "astr") {
         auto heuristic = getHeuristic(param);
     }
-    delete start_state;
     double execTime = info.getExecutionTime();
 //    std::cout << execTime << '\n';
 

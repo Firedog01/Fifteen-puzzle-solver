@@ -41,6 +41,9 @@ std::string op_path::toString() const {
 
 op_path::op_path(const op_path &old, ops::operators new_op) : len(old.len + 1), lastOp(new_op) {
     path = new ops::operators[len];
-    std::copy(old.path, old.path + len, path);
+    if(old.len != 0) {
+        std::copy(old.path, old.path + len, path);
+    }
+
     path[len - 1] = new_op;
 }

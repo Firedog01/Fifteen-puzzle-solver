@@ -3,6 +3,7 @@
 uint8_t board::len;
 uint8_t board::width;
 uint8_t board::height;
+bool (*board::same)(uint8_t* first, uint8_t* second);
 
 board::board(uint8_t *ptr) : table(ptr) {
     int i = 0;
@@ -78,5 +79,8 @@ bool board::sameAny(uint8_t* solved, uint8_t* state) {
 
 
 bool board::operator==(const board &other) const {
-    return same(this->table, other.table);
+    if(same == &board::sameMod8 || same == &board::sameMod4 || same == &board::sameAny) {
+        return same(this->table, other.table);
+    }
+    return false;
 }
