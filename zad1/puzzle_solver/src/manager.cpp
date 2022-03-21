@@ -61,14 +61,13 @@ ops::heuristics manager::getHeuristic(std::string s) {
 void manager::findSolution() {
     file_start_state startStateHandler(start_state_file);
     state start_state = startStateHandler.getState();
-    board_handler::displayBoard(start_state.first);
+//    board_handler::displayBoard(start_state.first);
     op_path solution;
+
 
     if(strategy == "bfs") {
         ops::operators* order = getOrder(param); // length: [4]
-        std::cout << "before algo\n";
         solution = bfs::algorithm(start_state, order, info);
-        std::cout << "after algo\n";
         if (solution.len != -1) {
             // solution found!
         }

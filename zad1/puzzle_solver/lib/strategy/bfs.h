@@ -25,7 +25,7 @@ struct bfs {
                     U.add(v)
         return failure
      */
-    static op_path algorithm(const state& start_state, ops::operators* order, info_bundle& info);
+    static op_path algorithm(state& start_state, ops::operators* order, info_bundle& info);
 
 
 };
