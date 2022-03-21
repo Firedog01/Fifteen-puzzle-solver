@@ -4,7 +4,6 @@ info_bundle::info_bundle() : timer(), statesProcessed(0), statesVisited(0), maxD
 
 double info_bundle::getExecutionTime() {
     double ret = timer.elapsed();
-    timer.reset();
     return ret;
 }
 

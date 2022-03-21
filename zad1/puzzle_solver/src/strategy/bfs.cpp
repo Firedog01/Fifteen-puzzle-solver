@@ -7,11 +7,15 @@ op_path bfs::algorithm(state& start_state, ops::operators *order, info_bundle &i
     std::unordered_map<board, op_path, board_hash> visited;
     uint8_t* solved_table = board_handler::getSolvedTable();
     state* cur_state;
-
+    int maxDepth = 0;
     q_to_process.emplace(start_state);                     /// Q.enqueue(s)
     info.statesProcessed++;
     while(!q_to_process.empty()) {                          /// while !Q.isempty():
         cur_state = &q_to_process.front();                  /// v = Q.dequeue()
+//        if(cur_state->second.len > maxDepth) {
+//            maxDepth++;
+//            std::cout << maxDepth << " " << info.getExecutionTime() << '\n';
+//        }
         info.statesProcessed++;
         ops::operators* op = order;
         for(int i = 0; i < 4; i++, op++) {                  /// for n in neighbours(v):
