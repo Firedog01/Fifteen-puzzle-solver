@@ -61,7 +61,7 @@ ops::heuristics manager::getHeuristic(std::string s) {
 void manager::findSolution() {
     file_start_state startStateHandler(start_state_file);
     state start_state = startStateHandler.getState();
-    bfs::displayBoard(start_state.first.table);
+    board_handler::displayBoard(start_state.first);
     op_path solution;
 
     if(strategy == "bfs") {

@@ -27,7 +27,7 @@ struct bfs {
      */
     static op_path algorithm(const state& start_state, ops::operators* order, info_bundle& info);
 
-    static void displayBoard(uint8_t * state);
+
 };
 
 

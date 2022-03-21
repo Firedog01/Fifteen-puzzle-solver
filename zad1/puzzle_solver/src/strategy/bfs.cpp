@@ -7,19 +7,19 @@ op_path bfs::algorithm(const state& start_state, ops::operators *order, info_bun
     std::unordered_map<board, op_path, board_hash> visited;
     uint8_t* solved_table = board_handler::getSolvedTable();
     state* cur_state;
-//    bfs::displayBoard(start_state->first.table);
+    board_handler::displayBoard(start_state.first.table);
 
     q_to_process.emplace(start_state);                     /// Q.enqueue(s)
     info.statesProcessed++;
     while(!q_to_process.empty()) {                          /// while !Q.isempty():
         cur_state = &q_to_process.front();                  /// v = Q.dequeue()
-        bfs::displayBoard(cur_state->first.table);
+        board_handler::displayBoard(cur_state->first.table);
         info.statesProcessed++;
 
         ops::operators* op = order;
         for(int i = 0; i < 4; i++, op++) {                  /// for n in neighbours(v):
             auto neighbour = board_handler::new_moved(cur_state, *op);
-            if(board::same(solved_table, cur_state->first.table)) { /// if n is solution:
+            if(board::same(solved_table, cur_state->first.table.data())) { /// if n is solution:
                 // solution found!
                 std::cout << "solution found\n";
                 op_path solution = neighbour->second;
@@ -42,12 +42,4 @@ op_path bfs::algorithm(const state& start_state, ops::operators *order, info_bun
         q_to_process.pop();
     }
     return {-1};
-}
-
-void bfs::displayBoard(uint8_t *state) {
-    for(int i = 0; i < board::len; i++) {
-        std::cout << +state[i] << " ";
-        if(i % 4 == 3)
-            std::cout << '\n';
-    }
 }

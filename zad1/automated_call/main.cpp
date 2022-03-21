@@ -4,13 +4,12 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
-#include "../puzzle_solver/lib/manager.h"
 #include "../puzzle_solver/lib/info/info_bundle.h"
 
 void windowsProcess(char** argv);
 
 int main(int argc, char *argv[]) {
-    windowsProcess(argv);
+//    windowsProcess(argv);
 
     return 0;
 }

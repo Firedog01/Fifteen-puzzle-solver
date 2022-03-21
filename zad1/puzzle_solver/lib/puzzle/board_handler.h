@@ -14,6 +14,7 @@ class board_handler {
 public:
     static state* new_moved(std::pair<board, op_path>* old_state, ops::operators op);
     static uint8_t* getSolvedTable();
+    static void displayBoard(const board& b);
 };
 
 

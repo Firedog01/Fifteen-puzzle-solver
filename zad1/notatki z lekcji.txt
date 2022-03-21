@@ -126,6 +126,7 @@ dfs nowa implementacja z rozbieżnościami co do rekurencji:
             return success
         T - lista stanów otwartych (set)
         S - lista stanów zamkniętych (stack)
+        S.push(s)
         while !S.empty():
             v = S.pop()
             if !T.has(n):
@@ -135,3 +136,51 @@ dfs nowa implementacja z rozbieżnościami co do rekurencji:
                         return success
                     S.push(n)
         return failure
+
+
+heurystyki:
+maksymalizujemy ilość elementów na swoim miejscu
+zaczynamy od metryki hamminga: czy elementy są na swoich miejscach
+
+metryka manhattan: liczy odległości poszczególnych elementów na osi x i y
+
+funkcja oszacowania węzła - suma funkcji heurystyki i głębokości danego węzła
+im mniejsza wartość tym szybciej jest rozpatrywany dany węzeł
+    f(x) = g(x) + h(x)
+
+heurystyka musi być dopuszczalna (admissible) - może się mylić tylko w jedną stronę, nie może przeszacować kosztu dotarcia
+    do celu
+
+astr gwarantuje znalezienie optymalnego rozwiązania
+
+heurystyka musi być spójna (consistency) - doczytać.
+
+w heurystyce nie uwzględniać zera!!
+
+potrzeba kolejki priorytetowej
+priority_queue
+https://medium.com/@taohidulii/min-priority-queue-in-c-7e64bd01359c
+youtube: Introduction to algorithms MIT
+
+astar(G, s):
+    if s is solution:
+        return success
+    P = priority_queue()
+    T = set()
+    P.insert(s, 0) // z priorytetem zero
+    while !P.isempty():
+        v = P.pull() // najmniejszy priorytet
+        if v is solution:
+            return success
+        T.add(v)
+        for n in v.neighbours:
+            if !T.has(n):
+                f = g(n) + h(n)
+                if !P.has(n):
+                    P.insert(n, f)
+                else:
+                    if P.priority(n) > f:
+                        P.update(n, f) // zastąp
+    return failure
+
+

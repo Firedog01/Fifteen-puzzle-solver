@@ -47,17 +47,24 @@ state* board_handler::new_moved(std::pair<board, op_path> *old_state, ops::opera
     }
     board moved_board(old_state->first);
     op_path moved_path(old_state->second, op);
-    uint8_t *ptr_oz = moved_board.table,
-            *ptr_nz = moved_board.table;
+    uint8_t *ptr_oz = moved_board.table.data(),
+            *ptr_nz = moved_board.table.data();
     ptr_oz += old_state->first.zeroIdx;
     ptr_nz += movedZeroIdx;
     *ptr_oz = *ptr_nz;
     *ptr_nz = 0;
     moved_board.zeroIdx = movedZeroIdx;
-    state* ret_state = new state(moved_board, moved_path);
+    auto ret_state = new state(moved_board, moved_path);
     std::cout << "zeroidx: " << +ret_state->first.zeroIdx << '\n';
     return ret_state;
 }
 
 
+void board_handler::displayBoard(const board& board) {
+    for(int i = 0; i < board::len; i++) {
+        std::cout << +board.table[i] << " ";
+        if(i % 4 == 3)
+            std::cout << '\n';
+    }
+}
 
