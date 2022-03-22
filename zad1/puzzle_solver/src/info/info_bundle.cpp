@@ -7,3 +7,12 @@ double info_bundle::getExecutionTime() {
     return ret;
 }
 
+void info_bundle::setMaxDepth(int newDepth) {
+    if(newDepth > maxDepth)
+        maxDepth = newDepth;
+}
+
+int info_bundle::getMaxDepth() const {
+    return maxDepth;
+}
+

@@ -2,9 +2,8 @@
 #define ZAD1_MANAGER_H
 
 #include <iomanip>
-#include "file/file_start_state.h"
+#include "file_start_state.h"
 #include "info/info_bundle.h"
-#include "strategy/bfs.h"
 
 class manager {
 

@@ -9,13 +9,11 @@ set(COMPILE_FLAGS "-m64 -Ofast")
 set(SOURCE_FILES
         puzzle_solver/src/info/info_bundle.cpp
         puzzle_solver/src/info/timer.cpp
-        puzzle_solver/src/file/file_info.cpp
-        puzzle_solver/src/file/file_start_state.cpp
-        puzzle_solver/src/file/file_solution.cpp
+        puzzle_solver/src/file_start_state.cpp
         puzzle_solver/src/manager.cpp
         puzzle_solver/src/puzzle/board.cpp
         puzzle_solver/src/puzzle/board_handler.cpp
-        puzzle_solver/src/puzzle/op_path.cpp puzzle_solver/src/strategy/bfs.cpp)
+        puzzle_solver/src/puzzle/op_path.cpp)
 
 add_library(zad1_lib ${SOURCE_FILES})
 

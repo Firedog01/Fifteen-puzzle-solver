@@ -8,13 +8,14 @@
 
 class info_bundle {
     timer timer;
-
+    int maxDepth;
 public:
     info_bundle();
     double getExecutionTime();
     int statesVisited;
     int statesProcessed;
-    int maxDepth;
+    int getMaxDepth() const;
+    void setMaxDepth(int newDepth);
 };
 
 

@@ -1,4 +1,5 @@
 #include "../lib/manager.h"
+#include "../lib/strategies.h"
 
 
 manager::manager(char **argv) : info(), strategy(argv[1]), param(argv[2]), start_state_file(argv[3]),
@@ -67,10 +68,7 @@ void manager::findSolution() {
 
     if(strategy == "bfs") {
         ops::operators* order = getOrder(param); // length: [4]
-        solution = bfs::algorithm(start_state, order, info);
-        if (solution.len != -1) {
-            // solution found!
-        }
+        solution = strategies::bfs(start_state, order, info);
     } else if(strategy == "dfs") {
         auto order = getOrder(param);
 
@@ -91,10 +89,10 @@ void manager::findSolution() {
     // extra info file
     std::ofstream infoFile(extra_info_file);
     infoFile
-            << solution.len << '\n'
+             << solution.len << '\n'
              << info.statesProcessed << '\n'
              << info.statesVisited << '\n'
-             << info.maxDepth << '\n'
+             << info.getMaxDepth() << '\n'
              << std::setprecision(3) << std::fixed << execTime << '\n';
     infoFile.close();
 }

@@ -13,25 +13,35 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 //    windowsProcess(argv);
-    string BUILD_DIR("build"); // możliwe że u ciebie to będzie cmake-build-debug
-    string STARTS_DIR("start_state_7\\");
-    string OUT_BFS("files\\bfs\\");
+    string PROJECT_DIR("zad1"); // możliwe że u ciebie to będzie cmake-build-debug
+    string STARTS_DIR(R"(files_zad1\start_state_7\)");
+    string OUT_BFS(R"(files_zad1\bfs\)");
 
+    /*
+    string orders[] = {"lrud","lrdu","lurd","ludr",
+"ldru","ldur","rlud","rldu",
+"ruld","rudl","rdlu","rdul",
+"ulrd","uldr","urld","urdl",
+"udlr","udrl","dlru","dlur",
+"drlu","drul","dulr","durl"};
+    //*/
     string orders[] = {"rdul", "rdlu", "drul", "drlu",
                        "ludr", "lurd", "uldr", "ulrd"};
 
     string this_path(argv[0]);
-    string program_root = this_path.substr(0, this_path.find(BUILD_DIR));
-    string file_dir = program_root + "files\\" + STARTS_DIR;
+    string program_root = this_path.substr(0, this_path.find(PROJECT_DIR));
+    string file_dir = program_root + STARTS_DIR;
+    std::cout << program_root << '\n' << file_dir << '\n';
 
     info_bundle info;
     for (const auto& entry : filesystem::directory_iterator(file_dir)) {
         string file_path = entry.path().string();
+        std::cout << file_path << '\n';
         auto fnIdx = file_path.find(STARTS_DIR);
         fnIdx += STARTS_DIR.length();
         string file_name = file_path.substr(fnIdx);
         file_name = file_name.substr(0, file_name.find('.'));
-
+        std::cout << file_name << '\n';
         // 4x4_01_0001_astr_manh_sol.txt
         // 4x4_01_0001_astr_manh_stats.txt
         string strategy = "bfs";
@@ -40,8 +50,9 @@ int main(int argc, char *argv[]) {
             out_file_name <<  program_root << OUT_BFS << file_name << "_" << strategy << "_" << order;
             string result_file = out_file_name.str() + "_sol.txt";
             string extra_file = out_file_name.str() + "_stats.txt";
-            manager manager(strategy, order, file_path, result_file, extra_file);
-            manager.findSolution();
+            std::cout << "input: " << file_path << " output: " << result_file << '\n';
+//            manager manager(strategy, order, file_path, result_file, extra_file);
+//            manager.findSolution();
         }
     }
     cout << "calkowity czas egzekucji dla bfs: " << info.getExecutionTime() << " ms";
