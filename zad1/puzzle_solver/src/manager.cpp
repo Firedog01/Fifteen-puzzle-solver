@@ -1,5 +1,4 @@
 #include "../lib/manager.h"
-#include "../lib/strategies.h"
 
 
 manager::manager(char **argv) : info(), strategy(argv[1]), param(argv[2]), start_state_file(argv[3]),
@@ -16,7 +15,7 @@ manager::manager(std::string strategy, std::string param, std::string s_file, st
  * @param s input string
  * @return table of operators, table_len exactly 4 or nullptr
  */
-ops::operators* manager::getOrder(std::string s) {
+ops::operators* manager::get_order(std::string s) {
     if(s.size() == 4) {
         auto order = new ops::operators[4];
         for(int i = 0; i < 4; i++) {
@@ -46,7 +45,7 @@ ops::operators* manager::getOrder(std::string s) {
     throw std::logic_error("incorrect operators count");
 }
 
-ops::heuristics manager::getHeuristic(std::string s) {
+ops::heuristics manager::get_heuristic(std::string s) {
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
     if(s == "hamm") {
         return ops::hamm;
@@ -59,40 +58,37 @@ ops::heuristics manager::getHeuristic(std::string s) {
 
 
 
-void manager::findSolution() {
+void manager::find_solution() {
     file_start_state startStateHandler(start_state_file);
     state start_state = startStateHandler.getState();
-//    board_handler::displayBoard(start_state.first);
     op_path solution;
-
+    strategies strats;
 
     if(strategy == "bfs") {
-        ops::operators* order = getOrder(param); // length: [4]
-        solution = strategies::bfs(start_state, order, info);
+        ops::operators* order = get_order(param);
+        solution = strats.bfs(start_state, order, info);
+        delete order;
     } else if(strategy == "dfs") {
-        auto order = getOrder(param);
-
+        ops::operators* order = get_order(param);
+        solution = strats.dfs(start_state, order, info);
+        delete order;
     } else if(strategy == "astr") {
-        auto heuristic = getHeuristic(param);
+        auto heuristic = get_heuristic(param);
     }
-    double execTime = info.getExecutionTime();
-//    std::cout << execTime << '\n';
+    double execTime = info.get_time();
 
     // result file
-    std::ofstream solutionFile(result_file);
-    solutionFile << solution.len << "\n";
+    std::ofstream solution_file(result_file);
+    solution_file << solution.len << "\n";
     if(solution.len != -1) {
-        solutionFile << solution.toString();
+        solution_file << solution.string();
     }
-    solutionFile.close();
+    solution_file.close();
 
     // extra info file
-    std::ofstream infoFile(extra_info_file);
-    infoFile
-             << solution.len << '\n'
-             << info.statesProcessed << '\n'
-             << info.statesVisited << '\n'
-             << info.getMaxDepth() << '\n'
-             << std::setprecision(3) << std::fixed << execTime << '\n';
-    infoFile.close();
+    std::ofstream info_file(extra_info_file);
+    info_file << solution.len << '\n' << info.processed << '\n'
+            << info.visited << '\n' << info.get_max_depth() << '\n'
+            << std::setprecision(3) << std::fixed << execTime << '\n';
+    info_file.close();
 }

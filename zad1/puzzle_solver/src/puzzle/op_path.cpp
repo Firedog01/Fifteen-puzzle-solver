@@ -13,7 +13,7 @@ bool op_path::operator==(const op_path &other) const {
     return retVal;
 }
 
-std::string op_path::toString() const {
+std::string op_path::string() const {
     std::stringstream ss;
     auto ops = this->path;
     for(int i = 0; i < this->len; i++, ops++) {
@@ -39,7 +39,7 @@ std::string op_path::toString() const {
     return ss.str();
 }
 
-op_path::op_path(const op_path &old, ops::operators new_op) : len(old.len + 1), lastOp(new_op) {
+op_path::op_path(const op_path &old, ops::operators new_op) : len(old.len + 1), last_op(new_op) {
     path = new ops::operators[len];
     if(old.len != 0) {
         std::copy(old.path, old.path + len, path);

@@ -10,10 +10,8 @@ int main(int argc, char *argv[]) {
         file << "incorrect number of args";
         return 1;
     }
-//    info_bundle info;
     manager manager(argv);
-    manager.findSolution();
-//    std::cout << info.getExecutionTime();
+    manager.find_solution();
     return 0;
 }
 

@@ -12,8 +12,5 @@ namespace ops {
 class board;
 class op_path;
 typedef std::pair<board, op_path> state;
-typedef std::shared_ptr<uint8_t[]> tbl_ptr;
-//typedef bool (*same_func)(uint8_t* first, uint8_t* second);
-//same_func same;
 
 #endif //ZAD1_INCLUDES_H

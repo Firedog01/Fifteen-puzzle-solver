@@ -9,7 +9,7 @@
 // key of hashmap
 struct board {
     std::vector<uint8_t> table;
-    uint8_t zeroIdx;
+    uint8_t zero_idx;
 
     board(std::vector<uint8_t> table);
     board(const board& o); // copy constructor
@@ -25,9 +25,9 @@ struct board {
     static uint8_t height;
 
     static bool (*same)(const uint8_t* first, const uint8_t* second);
-    static bool sameMod8(const uint8_t * solved, const uint8_t * state);
-    static bool sameMod4(const uint8_t * solved, const uint8_t * state);
-    static bool sameAny(const uint8_t * solved, const uint8_t * state);
+    static bool same_mod8(const uint8_t * solved, const uint8_t * state);
+    static bool same_mod4(const uint8_t * solved, const uint8_t * state);
+    static bool same_any(const uint8_t * solved, const uint8_t * state);
     // needs to be called before any comparison
     // but after setting of board::len
     static void init_same();

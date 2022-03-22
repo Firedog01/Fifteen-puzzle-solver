@@ -9,12 +9,12 @@
 struct op_path {
     ops::operators *path;
     int16_t len;
-    ops::operators lastOp;
+    ops::operators last_op;
 
-    op_path() : len(0), path(nullptr), lastOp(ops::Undefined) {}
-    op_path(const int16_t l) : len(l), path(nullptr), lastOp(ops::Undefined) {} // for setting -1
+    op_path() : len(0), path(nullptr), last_op(ops::Undefined) {}
+    op_path(const int16_t l) : len(l), path(nullptr), last_op(ops::Undefined) {} // for setting -1
     op_path(const op_path& old, ops::operators new_op); // create moved
-    std::string toString() const; // called once for program, therefore returning by value
+    std::string string() const; // called once for program, therefore returning by value
     bool operator==(const op_path &other) const;
 };
 

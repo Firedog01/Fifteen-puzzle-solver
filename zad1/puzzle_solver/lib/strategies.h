@@ -8,7 +8,12 @@
 #include "puzzle/board_handler.h"
 
 struct strategies {
-    static op_path bfs(state& start_state, ops::operators* order, info_bundle& info);
+    strategies();
+    ~strategies();
+    uint8_t* solved_table;
+
+    op_path bfs(state& start_state, ops::operators* order, info_bundle& info);
+    op_path dfs(state& start_state, ops::operators* order, info_bundle& info);
 };
 
 
