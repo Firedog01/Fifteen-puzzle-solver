@@ -1,23 +1,10 @@
 #include "../../lib/puzzle/op_path.h"
 
-bool op_path::operator==(const op_path &other) const {
-    ops::operators *thisp = this->path,
-                   *othrp = other.path;
-
-    bool retVal = true;
-    for(uint8_t i = 0; i < this->len; i++, thisp++, othrp++) {
-        if(*thisp ^ *othrp) {
-            retVal = false;
-        }
-    }
-    return retVal;
-}
 
 std::string op_path::string() const {
     std::stringstream ss;
-    auto ops = this->path;
-    for(int i = 0; i < this->len; i++, ops++) {
-        switch(*ops) {
+    for(auto i = this->path.begin(); i != this->path.end(); i++) {
+        switch(*i) {
             case ops::L:
                 ss << "L";
                 break;
@@ -39,11 +26,16 @@ std::string op_path::string() const {
     return ss.str();
 }
 
-op_path::op_path(const op_path &old, ops::operators new_op) : len(old.len + 1), last_op(new_op) {
-    path = new ops::operators[len];
-    if(old.len != 0) {
-        std::copy(old.path, old.path + len, path);
-    }
+op_path::op_path(const op_path &old, ops::operators new_op) : path(old.path.size() + 1) {
+//https://stackoverflow.com/questions/39075850/fastest-way-to-copy-a-vector-with-specific-changes-in-c
+	if(!old.path.empty()) {
+		std::copy(old.path.begin(), old.path.end(), path.begin());
+	}
+    *(path.end() - 1) = new_op;
+}
 
-    path[len - 1] = new_op;
+op_path::op_path(int16_t l): path(l) {
+	for(auto i = path.begin(); i != path.end(); i++) {
+		*i = ops::Undefined;
+	}
 }

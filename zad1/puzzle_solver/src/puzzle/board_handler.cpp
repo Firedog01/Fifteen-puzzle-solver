@@ -17,28 +17,28 @@ state* board_handler::new_moved(const std::pair<board, op_path>& old_state, ops:
         case ops::L:
             if(old_state.first.zero_idx % board::width == 0)
                 return nullptr;
-            if(old_state.second.last_op == ops::R)
+            if(*(old_state.second.path.end() - 1) == ops::R)
                 return nullptr;
             moved_zero_idx--;
             break;
         case ops::R:
             if(old_state.first.zero_idx % board::width == board::width - 1)
                 return nullptr;
-            if(old_state.second.last_op == ops::L)
+            if(*(old_state.second.path.end() - 1) == ops::L)
                 return nullptr;
             moved_zero_idx++;
             break;
         case ops::U:
             if(old_state.first.zero_idx < board::width)
                 return nullptr;
-            if(old_state.second.last_op == ops::D)
+            if(*(old_state.second.path.end() - 1) == ops::D)
                 return nullptr;
             moved_zero_idx -= board::width;
             break;
         case ops::D:
             if(old_state.first.zero_idx > (board::len - board::width))
                 return nullptr;
-            if(old_state.second.last_op == ops::U)
+            if(*(old_state.second.path.end() - 1) == ops::U)
                 return nullptr;
             moved_zero_idx += board::width;
             break;

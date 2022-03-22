@@ -24,7 +24,7 @@ state file_start_state::getState() {
     board::init_same();
     board b = board(table);
     // issue: after return is called board destructor, which deallocates table.
-    op_path p;
+    op_path p(0);
     return {b, p};
 }
 

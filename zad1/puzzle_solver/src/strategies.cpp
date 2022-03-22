@@ -31,7 +31,7 @@ op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &
             if(neighbour == nullptr) { // illegal move or trivial(for example RL or UD)
                 continue;
             }
-            info.set_max_depth(neighbour->second.len);
+            info.set_max_depth(neighbour->second.path.size());
             if(board::same(solved_table, neighbour->first.table.data())) { /// if n is solution:
                 // solution found!
 				info.visited++; //xxx not sure if right
@@ -83,7 +83,7 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 					continue;
 				}
 				info.visited++;
-				info.set_max_depth(neighbour->second.len);
+				info.set_max_depth(neighbour->second.path.size());
 				if(board::same(solved_table, neighbour->first.table.data())) { /// if n is solution:
 					// solution found!
 					op_path solution = neighbour->second;
