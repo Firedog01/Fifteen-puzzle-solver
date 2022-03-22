@@ -124,12 +124,12 @@ dfs nowa implementacja z rozbieżnościami co do rekurencji:
     dfs(G, s):
         if s is solution:
             return success
-        T - lista stanów otwartych (set)
         S - lista stanów zamkniętych (stack)
+        T - lista stanów otwartych (set)
         S.push(s)
         while !S.empty():
             v = S.pop()
-            if !T.has(n):
+            if !T.has(v):
                 T.add(v)
                 for n in neghbours(v).reverse():
                     if n is solution:
