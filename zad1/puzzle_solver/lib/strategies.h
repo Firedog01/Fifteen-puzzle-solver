@@ -14,6 +14,7 @@ struct strategies {
 
     op_path bfs(state& start_state, ops::operators* order, info_bundle& info);
     op_path dfs(state& start_state, ops::operators* order, info_bundle& info);
+	op_path astr(state& start_state, ops::operators* order, info_bundle& info);
 };
 
 

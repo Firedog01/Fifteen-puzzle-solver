@@ -4,7 +4,10 @@ project(zad1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(DTARGET_64 ON)            # target 64 bit
-set(COMPILE_FLAGS "-m64 -Ofast")
+set(COMPILE_FLAGS "-m64 -Ofast -flto")
+    # -m64   - 64 bit arch
+    # -Ofast - (unsafe) optimalization for execution time
+    # -flto  - link time optimalization
 
 set(SOURCE_FILES
         puzzle_solver/src/info/info_bundle.cpp

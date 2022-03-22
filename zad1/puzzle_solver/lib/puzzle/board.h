@@ -18,7 +18,7 @@ struct board {
     bool operator==(const board &other) const;
     // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
 
-    board& operator=(const board& other);
+    board& operator=(const board& other); // trivial
 
     static uint8_t len;
     static uint8_t width;

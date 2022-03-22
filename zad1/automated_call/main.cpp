@@ -3,8 +3,9 @@
 #include <filesystem>
 #include "../puzzle_solver/lib/manager.h"
 
-
 using namespace std;
+
+void get_average_time(string program_root);
 
 int main(int argc, char *argv[]) {
     string PROJECT_DIR("zad1");
@@ -25,7 +26,8 @@ int main(int argc, char *argv[]) {
     string this_path(argv[0]);
     string program_root = this_path.substr(0, this_path.find(PROJECT_DIR));
     string file_dir = program_root + STARTS_DIR;
-
+	get_average_time(program_root);
+	return 0;
     info_bundle info;
     for (const auto& entry : filesystem::directory_iterator(file_dir)) {
         string file_path = entry.path().string();
@@ -46,4 +48,30 @@ int main(int argc, char *argv[]) {
     }
     cout << "calkowity czas egzekucji dla bfs: " << info.get_time() << " ms";
     return 0;
+}
+
+void get_average_time(string program_root) {
+	string strategy = "bfs";
+	string order = "lrud";
+	string file_path = program_root + "zad1\\files\\start_state_15.txt";
+	string result_file = program_root + "zad1\\files\\solution_15.txt";
+	string extra_file = program_root + "zad1\\files\\extra_info_15.txt";
+	int length = 100;
+	double total = 0;
+	for(int i = 0; i < length; i++) {
+		std::cout << '-';
+	}
+	std::cout << '\n';
+	for(int i = 0; i < length; i++) {
+		std::cout << '|';
+		manager manager(strategy, order, file_path, result_file, extra_file);
+		manager.find_solution();
+		ifstream extra(extra_file);
+		string buffer;
+		for(int j = 0; j < 5; j++) {
+			extra >> buffer;
+		}
+		total += stod(buffer);
+	}
+	std::cout << "\naverage: " << (total / (double) length) << '\n';
 }

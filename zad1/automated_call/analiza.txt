@@ -1,0 +1,6 @@
+15, -flto, 100 wywołań: 248.232
+15, bez -flto, 100 wywołań: 269.717
+15, bez -flto, 100 wywołań: 270.589
+15, -flto, 100 wywołań: 272.577
+15, -flto, 100 wywołań: 272.132
+-flto nie ma wpływu

@@ -7,9 +7,9 @@ uint8_t board::width;
 uint8_t board::height;
 bool (*board::same)(const uint8_t* first, const uint8_t* second);
 
-board::board(std::vector<uint8_t> table) : table(std::move(table)) {
+board::board(std::vector<uint8_t>  table) : table(std::move(table)) {
     auto it = std::find(this->table.begin(), this->table.end(), 0);
-    zero_idx = it - this->table.begin(); // no error handling if no zero was found
+    zero_idx = it - this->table.begin(); // if no zero was found zero_idx = table.length()
 }
 
 
