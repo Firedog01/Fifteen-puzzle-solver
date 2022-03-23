@@ -100,7 +100,7 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 	return {1};											/// return failure
 }
 
-op_path strategies::astr(state &start_state, ops::operators *order, info_bundle &info) {
+op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &info) {
 	info.processed++;
 	info.visited++;
 	if(board::same(start_state.first.table.data(), solved_table)) { /// if s is solution:

@@ -74,6 +74,7 @@ void manager::find_solution() {
         delete order;
     } else if(strategy == "astr") {
         auto heuristic = get_heuristic(param);
+		solution = strats.dfs(start_state, heuristic, info);
     }
     double execTime = info.get_time();
 

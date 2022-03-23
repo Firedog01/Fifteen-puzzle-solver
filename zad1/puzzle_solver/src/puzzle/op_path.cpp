@@ -28,7 +28,8 @@ std::string op_path::string() const {
 
 op_path::op_path(const op_path &old, ops::operators new_op) : path(old.path.size() + 1) {
 //https://stackoverflow.com/questions/39075850/fastest-way-to-copy-a-vector-with-specific-changes-in-c
-	if(!old.path.empty()) {
+
+	if(old.path.empty()) {
 		std::copy(old.path.begin(), old.path.end(), path.begin());
 	}
     *(path.end() - 1) = new_op;
