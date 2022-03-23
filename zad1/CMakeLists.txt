@@ -17,7 +17,7 @@ set(SOURCE_FILES
         puzzle_solver/src/puzzle/board.cpp
         puzzle_solver/src/puzzle/board_handler.cpp
         puzzle_solver/src/puzzle/op_path.cpp
-        puzzle_solver/src/strategies.cpp)
+        puzzle_solver/src/strategies.cpp puzzle_solver/lib/puzzle/f_and_state_comparator.cpp puzzle_solver/lib/puzzle/f_and_state_comparator.h)
 
 add_library(zad1_lib ${SOURCE_FILES})
 

@@ -1,4 +1,3 @@
-#include <stack>
 #include "../lib/strategies.h"
 
 strategies::strategies() {
@@ -78,9 +77,7 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 			ops::operators* op = order;
 			op += 4;
 			for(; op != order; op--) {    					/// for n in neighbours(v).reverse():
-				std::cout << "before neighbour\n";
 				auto neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
-				std::cout << "after neighbour\n";
 				if(neighbour == nullptr) { // illegal move or trivial(for example RL or UD)
 					continue;
 				}
@@ -100,14 +97,52 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 	return {1};											/// return failure
 }
 
-op_path strategies::astr(state &start_state, ops::operators *order, info_bundle &info) {
+op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &info) {
 	info.processed++;
 	info.visited++;
 	if(board::same(start_state.first.table.data(), solved_table)) { /// if s is solution:
 		return {0};										/// return success
 	}
 
-//	std::priority_queue<uint16_t, state, > open_states;							/// S - stack
+	std::priority_queue<f_and_state, std::vector<f_and_state>, f_and_state_comparator> open_states;	/// S - stack
 	std::unordered_map<board, op_path, board_hash> processed_states; /// T - set
+	ops::operators order[] = {ops::L, ops::R, ops::U, ops::D};
+
+	const f_and_state* cur_state;   // for iteration, i dont like that const
+
+	open_states.emplace(0, start_state);
+	while(!open_states.empty()) {
+		cur_state = &open_states.top();
+		if(board::same(cur_state->second.first.table.data(), solved_table)) {
+			// solution found
+			return cur_state->second.second;
+		}
+		ops::operators *op = order;
+		for(uint8_t i = 0; i < 4; i++, op++) {
+			auto neighbour = board_handler::new_moved(cur_state->second, *op); // uses new, must be deleted
+			if(neighbour == nullptr) { // illegal move or trivial(for example RL or UD)
+				continue;
+			}
+			info.visited++;
+			auto it = processed_states.insert(*neighbour);
+			if(it.second) { // insertion successful
+				info.visited++;
+				// heuristic
+				uint16_t f = 0;
+				// idk man
+				/*
+			 	if !T.has(n):
+                f = g(n) + h(n)
+                if !P.has(n):
+                    P.insert(n, f)
+                else:
+                    if P.priority(n) > f:
+                        P.update(n, f) // zastąp
+				 */
+			}
+		}
+		open_states.pop();
+	}
+	return {1};
 }
 

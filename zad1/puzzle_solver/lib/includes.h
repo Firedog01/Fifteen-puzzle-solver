@@ -14,5 +14,6 @@ namespace ops {
 class board;
 class op_path;
 typedef std::pair<board, op_path> state;
+typedef std::pair<uint16_t, state> f_and_state; // i dont like that
 
 #endif //ZAD1_INCLUDES_H

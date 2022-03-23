@@ -6,5 +6,12 @@
 -flto nie ma wpływu
 wykryto wyciek pamięci
 15, przerobienie op_path na vector, 100 wywołań: 337.491  :(
-15, rerun, 100 wywołań: 335.637
-15, rerun, 100 wywołań: 334.224
+rerun: 335.637
+rerun: 334.224
+15, zmodyfikowano op_path, 100 wywołań: 232.388
+rerun: 242.983
+rerun: 240.738
+włączono tryb oszczędzania energii w laptopie: 260.869
+nie mam pojęcia z czego wynikają tak duże różnice w uruchamianiu???
+
+
