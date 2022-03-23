@@ -79,15 +79,13 @@ void manager::find_solution() {
 
     // result file
     std::ofstream solution_file(result_file);
-    solution_file << solution.path.size() << "\n";
-    if(solution.path.size() != -1) {
-        solution_file << solution.string();
-    }
+    solution_file << solution.get_length() << '\n';
+	solution_file << solution.string() << '\n';
     solution_file.close();
 
     // extra info file
     std::ofstream info_file(extra_info_file);
-    info_file << solution.path.size() << '\n' << info.processed << '\n'
+    info_file << solution.get_length() << '\n' << info.processed << '\n'
             << info.visited << '\n' << info.get_max_depth() << '\n'
             << std::setprecision(3) << std::fixed << execTime << '\n';
     info_file.close();

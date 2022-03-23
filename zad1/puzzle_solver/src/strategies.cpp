@@ -27,8 +27,8 @@ op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &
 
         ops::operators* op = order;
         for(int i = 0; i < 4; i++, op++) {                /// for n in neighbours(v):
-            auto neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
-            if(neighbour == nullptr) { // illegal move or trivial(for example RL or UD)
+			auto neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
+			if(neighbour == nullptr) { // illegal move or trivial(for example RL or UD)
                 continue;
             }
             info.set_max_depth(neighbour->second.path.size());
@@ -55,7 +55,7 @@ op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &
         info.processed++;
         open_states.pop();
     }
-    return {-1};
+    return {1}; // will display size of -1
 }
 
 op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &info) {
@@ -78,7 +78,9 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 			ops::operators* op = order;
 			op += 4;
 			for(; op != order; op--) {    					/// for n in neighbours(v).reverse():
+				std::cout << "before neighbour\n";
 				auto neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
+				std::cout << "after neighbour\n";
 				if(neighbour == nullptr) { // illegal move or trivial(for example RL or UD)
 					continue;
 				}
@@ -95,7 +97,7 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 			}
 		}
     }
-	return {-1};											/// return failure
+	return {1};											/// return failure
 }
 
 op_path strategies::astr(state &start_state, ops::operators *order, info_bundle &info) {

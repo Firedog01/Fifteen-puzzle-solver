@@ -12,6 +12,8 @@ struct op_path {
 
     op_path(int16_t l);
     op_path(const op_path& old, ops::operators new_op); // create moved
+
+	int16_t get_length();
     std::string string() const; // called once for program, therefore returning by value
 };
 

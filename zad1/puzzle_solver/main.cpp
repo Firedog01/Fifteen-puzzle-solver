@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
         file << "incorrect number of args";
         return 1;
     }
-    manager manager(argv);
+	manager manager(argv);
     manager.find_solution();
     return 0;
 }

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../../lib/puzzle/op_path.h"
 
 
@@ -17,12 +18,11 @@ std::string op_path::string() const {
             case ops::U:
                 ss << "U";
                 break;
-            case ops::Undefined:
-                ss << "!";
+            default:
+                ss << "";
                 break;
         }
     }
-    ss << "\n";
     return ss.str();
 }
 
@@ -34,8 +34,23 @@ op_path::op_path(const op_path &old, ops::operators new_op) : path(old.path.size
     *(path.end() - 1) = new_op;
 }
 
-op_path::op_path(int16_t l): path(l) {
-	for(auto i = path.begin(); i != path.end(); i++) {
-		*i = ops::Undefined;
+op_path::op_path(int16_t l): path(1) {
+	if(l == 1) {
+		path.at(0) = ops::Undefined;
 	}
+	if(l == 0) {
+		path.at(0) = ops::Zero;
+	}
+}
+
+int16_t op_path::get_length() {
+	if(path.size() == 1) {
+		if(path[0] == ops::Undefined) {
+			return -1;
+		}
+		if(path[0] == ops::Zero) {
+			return 0;
+		}
+	}
+	return path.size();
 }

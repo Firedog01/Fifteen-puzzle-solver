@@ -4,3 +4,7 @@
 15, -flto, 100 wywołań: 272.577
 15, -flto, 100 wywołań: 272.132
 -flto nie ma wpływu
+wykryto wyciek pamięci
+15, przerobienie op_path na vector, 100 wywołań: 337.491  :(
+15, rerun, 100 wywołań: 335.637
+15, rerun, 100 wywołań: 334.224
