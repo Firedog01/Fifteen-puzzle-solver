@@ -26,8 +26,8 @@ int main(int argc, char *argv[]) {
     string this_path(argv[0]);
     string program_root = this_path.substr(0, this_path.find(PROJECT_DIR));
     string file_dir = program_root + STARTS_DIR;
-	get_average_time(program_root);
-	return 0;
+//	get_average_time(program_root);
+//	return 0;
     info_bundle info;
     for (const auto& entry : filesystem::directory_iterator(file_dir)) {
         string file_path = entry.path().string();
