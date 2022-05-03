@@ -6,10 +6,18 @@
 
 // todo: rename this namespace
 namespace ops {
-		// explicit for readability, look inside board_handler
-    enum operators: uint8_t {L = 0b00, R = 0b01, U = 0b10, D = 0b11,
-			Undefined = 0b1000, Zero = 0b1001};
-    enum heuristics {hamm, manh, error};
+    enum operators: int8_t {
+		L = 0b00,
+		R = 0b01,
+		U = 0b10,
+		D = 0b11,
+		None, NotFound
+	};
+    enum heuristics {
+		hamm,
+		manh,
+		error
+	};
 }
 class board;
 class op_path;

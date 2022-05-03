@@ -61,13 +61,14 @@ ops::heuristics manager::get_heuristic(std::string s) {
 void manager::find_solution() {
     file_start_state startStateHandler(start_state_file);
     state start_state = startStateHandler.getState();
-    op_path solution(0);
+    op_path solution;
     strategies strats;
 
+	double startTime = info.get_time();
     if(strategy == "bfs") {
         ops::operators* order = get_order(param);
         solution = strats.bfs(start_state, order, info);
-        delete order;
+        delete order; // CHAOS!!!
     } else if(strategy == "dfs") {
         ops::operators* order = get_order(param);
         solution = strats.dfs(start_state, order, info);
@@ -79,14 +80,16 @@ void manager::find_solution() {
 
     // result file
     std::ofstream solution_file(result_file);
-    solution_file << solution.get_length() << '\n';
-	solution_file << solution.string() << '\n';
+    solution_file << solution.get_length() << '\n'
+				  << solution.string() << '\n';
     solution_file.close();
 
     // extra info file
     std::ofstream info_file(extra_info_file);
-    info_file << solution.get_length() << '\n' << info.processed << '\n'
-            << info.visited << '\n' << info.get_max_depth() << '\n'
-            << std::setprecision(3) << std::fixed << execTime << '\n';
+    info_file << solution.get_length() << '\n'
+			  << info.processed << '\n'
+              << info.visited << '\n'
+			  << info.get_max_depth() << '\n'
+              << std::setprecision(3) << std::fixed << execTime << '\n';
     info_file.close();
 }

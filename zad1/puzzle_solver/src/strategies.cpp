@@ -1,6 +1,8 @@
 #include <stack>
 #include "../lib/strategies.h"
 
+#define DFS_MAX_DEPTH 20
+
 strategies::strategies() {
     board::init_same();
     solved_table = board_handler::new_solved_table(); // to modify solved state pass different function
@@ -13,7 +15,6 @@ strategies::~strategies() {
 }
 
 op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &info) {
-    info.processed++;
     info.visited++;
 
     std::queue<state> open_states;                        /// Q - queue
@@ -55,32 +56,29 @@ op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &
         info.processed++;
         open_states.pop();
     }
-    return {1}; // will display size of -1
+    return {ops::NotFound}; // will display size of -1
 }
 
 op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &info) {
-    info.processed++;
     info.visited++;
     if(board::same(start_state.first.table.data(), solved_table)) { /// if s is solution:
-        return {0};										/// return success
+        return {ops::None};										/// return success
     }
     std::stack<state> open_states;							/// S - stack
     std::unordered_map<board, op_path, board_hash> processed_states; /// T - set
 
-    state* cur_state;   // for iteration
+//    state* cur_state;   // for iteration
 
     open_states.push(start_state);						/// S.push(s)
     while(!open_states.empty()) {
 		info.processed++;
-        cur_state = &open_states.top();						/// v = S.pop()
-		auto it = processed_states.insert(*cur_state);
-		if(it.second) { // insertion successful
-			ops::operators* op = order;
-			op += 4;
-			for(; op != order; op--) {    					/// for n in neighbours(v).reverse():
-				std::cout << "before neighbour\n";
-				auto neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
-				std::cout << "after neighbour\n";
+        state cur_state(open_states.top());						/// v = S.pop()
+		open_states.pop();										///
+		auto it = processed_states.insert(cur_state);
+		if(it.second && cur_state.second.path.size() < DFS_MAX_DEPTH) {
+			ops::operators* op = order + 3;
+			for(int i = 0; i < 4; i++, op--) {    					/// for n in neighbours(v).reverse():
+				auto neighbour = board_handler::new_moved(cur_state, *op); // uses new, must be deleted
 				if(neighbour == nullptr) { // illegal move or trivial(for example RL or UD)
 					continue;
 				}
@@ -97,14 +95,14 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 			}
 		}
     }
-	return {1};											/// return failure
+	return {ops::NotFound};											/// return failure
 }
 
 op_path strategies::astr(state &start_state, ops::operators *order, info_bundle &info) {
 	info.processed++;
 	info.visited++;
 	if(board::same(start_state.first.table.data(), solved_table)) { /// if s is solution:
-		return {0};										/// return success
+		return {ops::None};										/// return success
 	}
 
 //	std::priority_queue<uint16_t, state, > open_states;							/// S - stack

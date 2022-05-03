@@ -34,21 +34,25 @@ op_path::op_path(const op_path &old, ops::operators new_op) : path(old.path.size
     *(path.end() - 1) = new_op;
 }
 
-op_path::op_path(int16_t l): path(1) {
-	if(l == 1) {
-		path.at(0) = ops::Undefined;
-	}
-	if(l == 0) {
-		path.at(0) = ops::Zero;
-	}
+op_path::op_path(ops::operators op) : path(1) {
+	path.at(0) = op;
 }
+
+//op_path::op_path(int16_t l): path(0) {
+//	if(l == 1) {
+//		path.at(0) = ops::Undefined;
+//	}
+//	if(l == 0) {
+//		path.at(0) = ops::Zero;
+//	}
+//}
 
 int16_t op_path::get_length() {
 	if(path.size() == 1) {
-		if(path[0] == ops::Undefined) {
+		if(path[0] == ops::NotFound) {
 			return -1;
 		}
-		if(path[0] == ops::Zero) {
+		if(path[0] == ops::None) {
 			return 0;
 		}
 	}

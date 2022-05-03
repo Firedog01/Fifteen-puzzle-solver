@@ -41,14 +41,14 @@ state* board_handler::new_moved(const std::pair<board, op_path>& old_state, ops:
             moved_zero_idx -= board::width;
             break;
         case ops::D:
-            if(old_state.first.zero_idx > (board::len - board::width))
+            if(old_state.first.zero_idx >= (board::len - board::width))
                 return nullptr;
             if(*(old_state.second.path.end() - 1) == ops::U)
                 return nullptr;
             moved_zero_idx += board::width;
             break;
 		case (ops::L + 4):
-			if(old_state.first.zero_idx > (board::len - board::width))
+			if(old_state.first.zero_idx % board::width == 0)
 				return nullptr;
 			moved_zero_idx--;
 			break;
@@ -63,7 +63,7 @@ state* board_handler::new_moved(const std::pair<board, op_path>& old_state, ops:
 			moved_zero_idx -= board::width;
 			break;
 		case (ops::D + 4):
-			if(old_state.first.zero_idx > (board::len - board::width))
+			if(old_state.first.zero_idx >= (board::len - board::width))
 				return nullptr;
 			moved_zero_idx += board::width;
 			break;
