@@ -2,10 +2,16 @@
 #define ZAD1_STRATEGIES_H
 
 #include <queue>
+#include <stack>
 #include <unordered_map>
 #include "includes.h"
 #include "info/info_bundle.h"
 #include "puzzle/board_handler.h"
+#include "../lib/strategies.h"
+#include "../lib/puzzle/state_astr.h"
+#include "../lib/puzzle/astr_compare.h"
+
+#define DFS_MAX_DEPTH 25
 
 struct strategies {
     strategies();

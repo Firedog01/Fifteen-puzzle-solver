@@ -1,12 +1,8 @@
-#include <stack>
 #include "../lib/strategies.h"
-
-#define DFS_MAX_DEPTH 25
 
 strategies::strategies() {
     board::init_same();
     solved_table = board_handler::new_solved_table(); // to modify solved state pass different function
-
 }
 
 
@@ -15,22 +11,36 @@ strategies::~strategies() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/* bfs wer 3:
+    s - stan początkowy
+    if s is solution:
+        return success
+    Q = queue
+    U = set
+    Q.enqueue(s)
+    while !Q.isempty():
+        v = Q.dequeue()
+        for n in neighbours(v):
+            if n is solution:
+                return success
+            if !U.has(n):
+                Q.enqueue(n)
+                U.add(v)
+    return failure
+ */
 op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &info) const {
     info.visited++;
 
     std::queue<state> open_states;                        /// Q - queue
     std::unordered_map<board, op_path, board_hash> processed_states; /// U - set
     state* cur_state;   // for iteration
-
     open_states.push(start_state);                     /// Q.enqueue(s)
 
     while(!open_states.empty()) {                         /// while !Q.isempty():
-        cur_state = &open_states.front();                 /// v = Q.dequeue()
-
+        cur_state = &open_states.front();                 /// 	v = Q.dequeue()
         ops::operators* op = order;
         for(int i = 0; i < 4; i++, op++) {                /// for n in neighbours(v):
-			auto neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
+			state* neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
 			if(neighbour == nullptr)  // illegal move or trivial(for example RL or UD)
                 continue;
             info.set_max_depth((int)neighbour->second.path.size());
@@ -41,7 +51,6 @@ op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &
                 delete neighbour;
                 return solution;							/// return success
             }
-
             /// if !U.has(n):
             ///     Q.enqueue(n)
             ///     U.add(v)
@@ -61,7 +70,25 @@ op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/* dfs nowa implementacja z rozbieżnościami co do rekurencji:
+    v - stan początkowy
+    G - goal
+    dfs(G, s):
+        if s is solution:
+            return success
+        S - lista stanów zamkniętych (stack)
+        T - lista stanów otwartych (set)
+        S.push(s)
+        while !S.empty():
+            v = S.pop()
+            if !T.has(v):
+                T.add(v)
+                for n in neghbours(v).reverse():
+                    if n is solution:
+                        return success
+                    S.push(n)
+        return failure
+ */
 op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &info) const {
     info.visited++;
     if(board::same(start_state.first.table.data(), solved_table))   /// if s is solution:
@@ -84,7 +111,6 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 			isInserted = true;
 		}
 		if(isInserted && cur_state.second.path.size() < DFS_MAX_DEPTH) {
-
 			ops::operators* op = order + 3;
 			for(int i = 0; i < 4; i++, op--) {    				/// for n in neighbours(v).reverse():
 				state* neighbour = board_handler::new_moved(cur_state, *op); // uses new, must be deleted
@@ -107,15 +133,32 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/* astar(G, s):
+    if s is solution:
+        return success
+    P = priority_queue()
+    T = set()
+    P.insert(s, 0) // z priorytetem zero
+    while !P.isempty():
+        v = P.pull() // najmniejszy priorytet
+        if v is solution:
+            return success
+        T.add(v)
+        for n in v.neighbours:
+            if !T.has(n):
+                f = g(n) + h(n)
+                if !P.has(n):
+                    P.insert(n, f)
+                else:
+                    if P.priority(n) > f:
+                        P.update(n, f) // zastąp
+    return failure
+ */
 op_path strategies::astr(state &start_state, ops::operators *order, info_bundle &info) const {
-	info.processed++;
 	info.visited++;
-	if(board::same(start_state.first.table.data(), solved_table)) { /// if s is solution:
-		return {ops::None};										/// return success
-	}
-
-//	std::priority_queue<uint16_t, state, > open_states;							/// S - stack
+	if(board::same(start_state.first.table.data(), solved_table))   /// if s is solution:
+		return {ops::None};										/// 	return success
+	std::priority_queue<state_astr, std::vector<state_astr>, astr_compare> open_states; /// P - priority queue
 	std::unordered_map<board, op_path, board_hash> processed_states; /// T - set
 	return {ops::NotFound};
 }
