@@ -2,6 +2,8 @@
 #define ZAD1_STATE_ASTR_H
 
 #include "../includes.h"
+#include "board.h"
+#include "op_path.h"
 
 struct state_astr {
 	uint16_t f;
@@ -16,6 +18,10 @@ struct state_astr {
 	static state get_state(const state_astr& sa) {
 		return std::make_pair(sa.b, sa.p);
 	}
+
+    static state_astr get_astr_state(const state& s) {
+        return state_astr(s.first, s.second);
+    }
 };
 
 

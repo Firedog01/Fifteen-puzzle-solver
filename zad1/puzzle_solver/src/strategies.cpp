@@ -1,5 +1,6 @@
 #include "../lib/strategies.h"
 #include "../lib/puzzle/heuristics.h"
+#include "../lib/util/astr_priority_queue.h"
 
 uint16_t (*strategies::heuristic)(state* st, uint8_t* solved);
 
@@ -161,7 +162,7 @@ op_path strategies::astr(state &start_state, ops::heuristics* heur, info_bundle 
 	info.visited++;
 	if(board::same(start_state.first.table.data(), solved_table))   /// if s is solution:
 		return {ops::None};										/// 	return success
-	std::priority_queue<state_astr, std::vector<state_astr>, astr_compare> open_states; /// P - priority queue
+    astr_priority_queue open_states;                                /// P - priority queue
 	std::unordered_map<board, op_path, board_hash> processed_states; /// T - set
 	ops::operators order[] = {ops::L, ops::R, ops::U, ops::D};
 	const state_astr* cur_state;
@@ -188,20 +189,19 @@ op_path strategies::astr(state &start_state, ops::heuristics* heur, info_bundle 
 			info.visited++;
 			auto it = processed_states.insert(*neighbour);
 			if(it.second) { // insertion successful, if !T.has(n):
-				info.visited++;
-				// heuristic
-				uint16_t f = 0;
-				// idk man
-				open_states.emplace(*neighbour);
-
-				/*
-                f = g(n) + h(n)
-                if !P.has(n):
-                    P.insert(n, f)
-                else:
-                    if P.priority(n) > f:
-                        P.update(n, f) // zastąp
-				 */
+                info.visited++;
+                // heuristic
+                uint16_t f = 0; // Make heur function pointer? Ex. uint16_t f = heur(neighbour);
+                // idk man
+                auto a = neighbour->first;
+                state_astr nsa = state_astr(neighbour->first, neighbour->second); // Ugh...
+                if (!open_states.has(nsa))              //if !P.has(n):
+                    open_states.emplace(*neighbour);    //P.insert(n, f)
+                else {
+                    if(open_states.get(nsa).f > f) {    // if P.priority(n) > f:
+                        open_states.get(nsa) = nsa;     // P.update(n, f)
+                    }
+                }
 			}
 		}
 		open_states.pop();
