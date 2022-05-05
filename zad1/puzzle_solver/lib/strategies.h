@@ -18,9 +18,10 @@ struct strategies {
     ~strategies();
     uint8_t* solved_table;
 
+	static uint16_t (*heuristic)(state* st, uint8_t* solved);
     op_path bfs(state& start_state, ops::operators* order, info_bundle& info) const;
     op_path dfs(state& start_state, ops::operators* order, info_bundle& info) const;
-	op_path astr(state& start_state, ops::operators* order, info_bundle& info) const;
+	op_path astr(state& start_state, ops::heuristics* heur, info_bundle& info) const;
 };
 
 

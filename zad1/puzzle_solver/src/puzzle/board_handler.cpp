@@ -92,3 +92,7 @@ void board_handler::display_board(const board& b) {
     }
 }
 
+state *board_handler::new_moved(const state_astr &old_state, ops::operators op) {
+	return new_moved(state_astr::get_state(old_state), op);
+}
+

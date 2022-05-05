@@ -1,4 +1,7 @@
 #include "../lib/strategies.h"
+#include "../lib/puzzle/heuristics.h"
+
+uint16_t (*strategies::heuristic)(state* st, uint8_t* solved);
 
 strategies::strategies() {
     board::init_same();
@@ -154,17 +157,54 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
                         P.update(n, f) // zastąp
     return failure
  */
-op_path strategies::astr(state &start_state, ops::operators *order, info_bundle &info) const {
+op_path strategies::astr(state &start_state, ops::heuristics* heur, info_bundle &info) const {
 	info.visited++;
 	if(board::same(start_state.first.table.data(), solved_table))   /// if s is solution:
 		return {ops::None};										/// 	return success
 	std::priority_queue<state_astr, std::vector<state_astr>, astr_compare> open_states; /// P - priority queue
 	std::unordered_map<board, op_path, board_hash> processed_states; /// T - set
+	ops::operators order[] = {ops::L, ops::R, ops::U, ops::D};
+	const state_astr* cur_state;
 
-	//open_states.push();
+	open_states.emplace(start_state);
+
+	if(*heur == ops::hamm) {
+		heuristic = &heuristics::hamming;
+	} else if(*heur == ops::manh) {
+		heuristic = &heuristics::manhattan;
+	}
+
 	while(!open_states.empty()) {
-		info.processed++;
-		state cur_state
+		cur_state = &open_states.top();
+		if(board::same(cur_state->b.table.data(), solved_table)) {
+			// solution found
+			return cur_state->p;
+		}
+		ops::operators *op = order;
+		for(uint8_t i = 0; i < 4; i++, op++) {
+			const auto neighbour = board_handler::new_moved(state_astr::get_state(*cur_state), *op); // uses new, must be deleted
+			if(neighbour == nullptr)  // illegal move or trivial(for example RL or UD)
+				continue;
+			info.visited++;
+			auto it = processed_states.insert(*neighbour);
+			if(it.second) { // insertion successful, if !T.has(n):
+				info.visited++;
+				// heuristic
+				uint16_t f = 0;
+				// idk man
+				open_states.emplace(*neighbour);
+
+				/*
+                f = g(n) + h(n)
+                if !P.has(n):
+                    P.insert(n, f)
+                else:
+                    if P.priority(n) > f:
+                        P.update(n, f) // zastąp
+				 */
+			}
+		}
+		open_states.pop();
 	}
 
 	return {ops::NotFound};
