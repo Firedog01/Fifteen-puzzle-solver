@@ -160,6 +160,13 @@ op_path strategies::astr(state &start_state, ops::operators *order, info_bundle 
 		return {ops::None};										/// 	return success
 	std::priority_queue<state_astr, std::vector<state_astr>, astr_compare> open_states; /// P - priority queue
 	std::unordered_map<board, op_path, board_hash> processed_states; /// T - set
+
+	//open_states.push();
+	while(!open_states.empty()) {
+		info.processed++;
+		state cur_state
+	}
+
 	return {ops::NotFound};
 }
 
