@@ -12,9 +12,9 @@ struct strategies {
     ~strategies();
     uint8_t* solved_table;
 
-    op_path bfs(state& start_state, ops::operators* order, info_bundle& info);
-    op_path dfs(state& start_state, ops::operators* order, info_bundle& info);
-	op_path astr(state& start_state, ops::operators* order, info_bundle& info);
+    op_path bfs(state& start_state, ops::operators* order, info_bundle& info) const;
+    op_path dfs(state& start_state, ops::operators* order, info_bundle& info) const;
+	op_path astr(state& start_state, ops::operators* order, info_bundle& info) const;
 };
 
 

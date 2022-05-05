@@ -23,4 +23,5 @@ class board;
 class op_path;
 typedef std::pair<board, op_path> state;
 
+
 #endif //ZAD1_INCLUDES_H

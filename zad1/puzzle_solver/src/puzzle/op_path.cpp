@@ -4,8 +4,8 @@
 
 std::string op_path::string() const {
     std::stringstream ss;
-    for(auto i = this->path.begin(); i != this->path.end(); i++) {
-        switch(*i) {
+    for(auto i : this->path) {
+        switch(i) {
             case ops::L:
                 ss << "L";
                 break;
@@ -27,7 +27,6 @@ std::string op_path::string() const {
 }
 
 op_path::op_path(const op_path &old, ops::operators new_op) : path(old.path.size() + 1) {
-//https://stackoverflow.com/questions/39075850/fastest-way-to-copy-a-vector-with-specific-changes-in-c
 	if(!old.path.empty()) {
 		std::copy(old.path.begin(), old.path.end(), path.begin());
 	}
@@ -37,15 +36,6 @@ op_path::op_path(const op_path &old, ops::operators new_op) : path(old.path.size
 op_path::op_path(ops::operators op) : path(1) {
 	path.at(0) = op;
 }
-
-//op_path::op_path(int16_t l): path(0) {
-//	if(l == 1) {
-//		path.at(0) = ops::Undefined;
-//	}
-//	if(l == 0) {
-//		path.at(0) = ops::Zero;
-//	}
-//}
 
 int16_t op_path::get_length() {
 	if(path.size() == 1) {

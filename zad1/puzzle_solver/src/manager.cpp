@@ -64,7 +64,6 @@ void manager::find_solution() {
     op_path solution;
     strategies strats;
 
-	double startTime = info.get_time();
     if(strategy == "bfs") {
         ops::operators* order = get_order(param);
         solution = strats.bfs(start_state, order, info);
