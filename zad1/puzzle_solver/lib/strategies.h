@@ -7,17 +7,21 @@
 #include "includes.h"
 #include "info/info_bundle.h"
 #include "puzzle/board_handler.h"
-#include "puzzle/f_and_state_comparator.h"
 
+#include "../lib/strategies.h"
+#include "../lib/puzzle/state_astr.h"
+#include "../lib/puzzle/astr_compare.h"
+
+#define DFS_MAX_DEPTH 25
 
 struct strategies {
     strategies();
     ~strategies();
     uint8_t* solved_table;
 
-    op_path bfs(state& start_state, ops::operators* order, info_bundle& info);
-    op_path dfs(state& start_state, ops::operators* order, info_bundle& info);
-	op_path astr(state& start_state, ops::heuristics heur, info_bundle& info);
+    op_path bfs(state& start_state, ops::operators* order, info_bundle& info) const;
+    op_path dfs(state& start_state, ops::operators* order, info_bundle& info) const;
+	op_path astr(state& start_state, ops::operators* order, info_bundle& info) const;
 };
 
 
