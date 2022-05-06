@@ -22,6 +22,7 @@ namespace ops {
 class board;
 class op_path;
 typedef std::pair<board, op_path> state;
+typedef std::__detail::_Node_iterator<std::pair<const board, op_path>, false, true> state_map_iterator;
 
 
 #endif //ZAD1_INCLUDES_H

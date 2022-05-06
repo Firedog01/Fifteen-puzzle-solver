@@ -162,49 +162,61 @@ op_path strategies::astr(state &start_state, ops::heuristics* heur, info_bundle 
 	info.visited++;
 	if(board::same(start_state.first.table.data(), solved_table))   /// if s is solution:
 		return {ops::None};										/// 	return success
-    astr_priority_queue open_states;                                /// P - priority queue
-	std::unordered_map<board, op_path, board_hash> processed_states; /// T - set
-	ops::operators order[] = {ops::L, ops::R, ops::U, ops::D};
-	const state_astr* cur_state;
 
-	open_states.emplace(start_state);
-
-	if(*heur == ops::hamm) {
+	if(*heur == ops::hamm)
 		heuristic = &heuristics::hamming;
-	} else if(*heur == ops::manh) {
+	else if(*heur == ops::manh)
 		heuristic = &heuristics::manhattan;
-	}
+	std::vector<std::unordered_map<board, op_path, board_hash>> open_st(OPEN_STATES_SIZE); 	/// P - priority queue
+	uint8_t first_no_empty_idx = 0;
+	uint16_t cur_size = OPEN_STATES_SIZE;
+	for (uint16_t j = 0; j < cur_size; j++) // xxx nie jestem pewien czy to jest potrzebne ==============================================
+		open_st.emplace_back();
+	std::unordered_map<board, op_path, board_hash> processed_states; 							/// T - set
+	ops::operators order[] = {ops::L, ops::R, ops::U, ops::D};
+	state_map_iterator cur_state;
+	ops::operators *op;
 
-	while(!open_states.empty()) {
-		cur_state = &open_states.top();
-		if(board::same(cur_state->b.table.data(), solved_table)) {
-			// solution found
-			return cur_state->p;
-		}
-		ops::operators *op = order;
-		for(uint8_t i = 0; i < 4; i++, op++) {
-			const auto neighbour = board_handler::new_moved(state_astr::get_state(*cur_state), *op); // uses new, must be deleted
+	open_st.at(0).insert(start_state);							/// P.insert(s, 0)
+	while(first_no_empty_idx != cur_size) {								/// while !P.isempty():
+		info.processed++;
+		cur_state = open_st.at(first_no_empty_idx).begin(); 			/// 	v = P.pull()
+		if(board::same(cur_state->first.table.data(), solved_table)) 	///		if v is solution:
+			return cur_state->second;									///			return success
+		processed_states.insert(*cur_state);							/// 	T.add(v)
+		op = order;
+		for(uint8_t i = 0; i < 4; i++, op++) {							/// 	for n in v.neighbours:
+			auto neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
 			if(neighbour == nullptr)  // illegal move or trivial(for example RL or UD)
 				continue;
 			info.visited++;
-			auto it = processed_states.insert(*neighbour);
-			if(it.second) { // insertion successful, if !T.has(n):
-                info.visited++;
-                // heuristic
-                uint16_t f = 0; // Make heur function pointer? Ex. uint16_t f = heur(neighbour);
-                // idk man
-                auto a = neighbour->first;
-                state_astr nsa = state_astr(neighbour->first, neighbour->second); // Ugh...
-                if (!open_states.has(nsa))              //if !P.has(n):
-                    open_states.emplace(*neighbour);    //P.insert(n, f)
-                else {
-                    if(open_states.get(nsa).f > f) {    // if P.priority(n) > f:
-                        open_states.get(nsa) = nsa;     // P.update(n, f)
-                    }
-                }
+			uint16_t priority = neighbour->second.get_length();				///
+			priority += heuristic(neighbour, solved_table);					/// f = g(n) + h(n)
+			if(cur_size < priority) { // resize vector if necessary
+				uint16_t dif = priority - cur_size + 1;
+				for (uint16_t j = 0; j < dif; j++)
+					open_st.emplace_back();
 			}
+
+			/// if !P.has(n):
+			/// 	P.insert(n, f)
+			/// else:
+			///     if P.priority(n) > f:
+			///         P.update(n, f)
+			auto it = open_st.at(priority).insert(*neighbour);
+			if(it.second) { // insertion successful
+				for(uint16_t j = priority; j < cur_size; j++) { // delete all same state
+					auto it_j = open_st.at(j).find(neighbour->first);
+					if(it_j != open_st.at(j).end())
+						open_st.at(j).erase(it_j);
+				}
+			}
+			delete neighbour;
 		}
-		open_states.pop();
+		open_st.at(first_no_empty_idx).erase(cur_state);
+		first_no_empty_idx = 0;
+		while(open_st.at(first_no_empty_idx).empty()) // mb slow
+			first_no_empty_idx++;
 	}
 
 	return {ops::NotFound};

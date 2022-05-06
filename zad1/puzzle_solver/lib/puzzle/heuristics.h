@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include "../includes.h"
+#include "board.h"
+#include "op_path.h"
 
 struct heuristics {
 	static uint16_t hamming(state* st, uint8_t* solved);

@@ -12,6 +12,7 @@
 #include "../lib/puzzle/astr_compare.h"
 
 #define DFS_MAX_DEPTH 25
+#define OPEN_STATES_SIZE 20
 
 struct strategies {
     strategies();
