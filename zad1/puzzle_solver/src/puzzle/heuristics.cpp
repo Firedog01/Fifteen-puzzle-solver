@@ -18,13 +18,13 @@ uint16_t heuristics::hamming(state* st, uint8_t *solved) {
 // Sum distances from number to expected place
 uint16_t heuristics::manhattan(state *st, uint8_t *solved) {
 	uint16_t ret = 0;
-	for(int i = 0; i < board::width; i++) {
-		for(int j = 0; i < board::height; i++) {
-			if (st->first.table[i] == 0) // Ignore 0
+	for(int i = 0; i < board::height; i++) {
+		for(int j = 0; j < board::width; j++) {
+			if (st->first.table[i * 4 + j] == 0) // Ignore 0
 				continue;
-			if (st->first.table[i] != solved[i]) {
-				ret += abs(i - ((st->first.table[i * 4 + j] - 1) % board::width)
-					   + abs(j - ((st->first.table[i * 4 + j] - 1) / board::height)));
+			if (st->first.table[i * 4 + j] != solved[i]) { // Calculate distance
+				ret += abs((i - st->first.table[i * 4 + j] - 1) / board::height)
+					   + abs((j - st->first.table[i * 4 + j] - 1) % board::width);
 			}
 		}
 	}
