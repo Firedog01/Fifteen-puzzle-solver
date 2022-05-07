@@ -7,8 +7,8 @@
 #include "op_path.h"
 
 struct heuristics {
-	static uint16_t hamming(state* st, uint8_t* solved);
-	static uint16_t manhattan(state* st, uint8_t* solved);
+	static uint16_t hamming(state* st, const uint8_t* solved);
+	static uint16_t manhattan(state* st, const uint8_t* solved);
 };
 
 

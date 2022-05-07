@@ -1,7 +1,7 @@
 #include "../../lib/puzzle/heuristics.h"
 
 // Are numbers in place
-uint16_t heuristics::hamming(state* st, uint8_t *solved) {
+uint16_t heuristics::hamming(state* st, const uint8_t *solved) {
 	uint16_t ret = 0;
 	for(int i = 0; i < board::len; i++) {
 		if (st->first.table[i] == 0) // Ignore 0
@@ -16,7 +16,7 @@ uint16_t heuristics::hamming(state* st, uint8_t *solved) {
  * val 1 2 3 4 5 6 .. 15  0
  */
 // Sum distances from number to expected place
-uint16_t heuristics::manhattan(state *st, uint8_t *solved) {
+uint16_t heuristics::manhattan(state *st, const uint8_t *solved) {
 	uint16_t ret = 0;
 	for(int i = 0; i < board::height; i++) {
 		for(int j = 0; j < board::width; j++) {
@@ -24,7 +24,7 @@ uint16_t heuristics::manhattan(state *st, uint8_t *solved) {
 				continue;
 			if (st->first.table[i * 4 + j] != solved[i]) { // Calculate distance
 				ret += abs((i - st->first.table[i * 4 + j] - 1) / board::height)
-					   + abs((j - st->first.table[i * 4 + j] - 1) % board::width);
+					+  abs((j - st->first.table[i * 4 + j] - 1) % board::width);
 			}
 		}
 	}

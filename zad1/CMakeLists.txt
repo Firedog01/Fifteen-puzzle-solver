@@ -17,8 +17,8 @@ set(SOURCE_FILES
         puzzle_solver/src/puzzle/board.cpp
         puzzle_solver/src/puzzle/board_handler.cpp
         puzzle_solver/src/puzzle/op_path.cpp
-        puzzle_solver/src/strategies.cpp puzzle_solver/src/puzzle/state_astr.cpp
-        puzzle_solver/src/util/astr_priority_queue.cpp
+        puzzle_solver/src/strategies.cpp
+        puzzle_solver/src/puzzle/state_astr.cpp
         puzzle_solver/src/puzzle/heuristics.cpp)
 
 add_library(zad1_lib ${SOURCE_FILES})

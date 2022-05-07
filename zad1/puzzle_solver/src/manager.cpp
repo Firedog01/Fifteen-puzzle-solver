@@ -73,7 +73,8 @@ void manager::find_solution() {
         solution = strats.dfs(start_state, order, info);
         delete order;
     } else if(strategy == "astr") {
-        auto heuristic = get_heuristic(param);
+        ops::heuristics heuristic = get_heuristic(param);
+		solution = strats.astr(start_state, heuristic, info);
     }
     double execTime = info.get_time();
 

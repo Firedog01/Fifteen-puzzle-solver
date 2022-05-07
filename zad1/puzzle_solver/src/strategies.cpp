@@ -1,14 +1,12 @@
 #include "../lib/strategies.h"
-#include "../lib/puzzle/heuristics.h"
-#include "../lib/util/astr_priority_queue.h"
 
-uint16_t (*strategies::heuristic)(state* st, uint8_t* solved);
+uint16_t (*strategies::heuristic)(state* st, const uint8_t* solved);
+typedef std::unordered_map<board, op_path, board_hash>::const_iterator map_iterator;
 
 strategies::strategies() {
     board::init_same();
     solved_table = board_handler::new_solved_table(); // to modify solved state pass different function
 }
-
 
 strategies::~strategies() {
     delete[](solved_table);
@@ -158,27 +156,34 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
                         P.update(n, f) // zastąp
     return failure
  */
-op_path strategies::astr(state &start_state, ops::heuristics* heur, info_bundle &info) const {
+op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &info) const {
 	info.visited++;
-	if(board::same(start_state.first.table.data(), solved_table))   /// if s is solution:
-		return {ops::None};										/// 	return success
+	if(board::same(start_state.first.table.data(), solved_table))   	/// if s is solution:
+		return {ops::None};											/// 	return success
 
-	if(*heur == ops::hamm)
+	if(heur == ops::hamm)
 		heuristic = &heuristics::hamming;
-	else if(*heur == ops::manh)
+	else if(heur == ops::manh)
 		heuristic = &heuristics::manhattan;
+
 	std::vector<std::unordered_map<board, op_path, board_hash>> open_st(OPEN_STATES_SIZE); 	/// P - priority queue
 	uint8_t first_no_empty_idx = 0;
 	uint16_t cur_size = OPEN_STATES_SIZE;
-	for (uint16_t j = 0; j < cur_size; j++) // xxx nie jestem pewien czy to jest potrzebne ==============================================
-		open_st.emplace_back();
-	std::unordered_map<board, op_path, board_hash> processed_states; 							/// T - set
+	std::unordered_map<board, op_path, board_hash> processed_states; 	/// T - set
 	ops::operators order[] = {ops::L, ops::R, ops::U, ops::D};
-	state_map_iterator cur_state;
+	map_iterator cur_state;
 	ops::operators *op;
 
 	open_st.at(0).insert(start_state);							/// P.insert(s, 0)
-	while(first_no_empty_idx != cur_size) {								/// while !P.isempty():
+	while(true) {														/// while !P.isempty():
+		first_no_empty_idx = 0;
+		// our implementation requires checking emptiness of container in following way
+		while(open_st.at(first_no_empty_idx).empty()) { // mb slow
+			first_no_empty_idx++;
+			if(first_no_empty_idx == cur_size) { 	/// while !P.isempty()
+				return {ops::NotFound};			/// return failure
+			}
+		}
 		info.processed++;
 		cur_state = open_st.at(first_no_empty_idx).begin(); 			/// 	v = P.pull()
 		if(board::same(cur_state->first.table.data(), solved_table)) 	///		if v is solution:
@@ -190,8 +195,8 @@ op_path strategies::astr(state &start_state, ops::heuristics* heur, info_bundle 
 			if(neighbour == nullptr)  // illegal move or trivial(for example RL or UD)
 				continue;
 			info.visited++;
-			uint16_t priority = neighbour->second.get_length();				///
-			priority += heuristic(neighbour, solved_table);					/// f = g(n) + h(n)
+			uint16_t priority = neighbour->second.get_length();		///
+			priority += heuristic(neighbour, solved_table);			/// f = g(n) + h(n)
 			if(cur_size < priority) { // resize vector if necessary
 				uint16_t dif = priority - cur_size + 1;
 				for (uint16_t j = 0; j < dif; j++)
@@ -205,7 +210,7 @@ op_path strategies::astr(state &start_state, ops::heuristics* heur, info_bundle 
 			///         P.update(n, f)
 			auto it = open_st.at(priority).insert(*neighbour);
 			if(it.second) { // insertion successful
-				for(uint16_t j = priority; j < cur_size; j++) { // delete all same state
+				for(uint16_t j = priority + 1; j < cur_size; j++) { // delete all same state
 					auto it_j = open_st.at(j).find(neighbour->first);
 					if(it_j != open_st.at(j).end())
 						open_st.at(j).erase(it_j);
@@ -214,11 +219,6 @@ op_path strategies::astr(state &start_state, ops::heuristics* heur, info_bundle 
 			delete neighbour;
 		}
 		open_st.at(first_no_empty_idx).erase(cur_state);
-		first_no_empty_idx = 0;
-		while(open_st.at(first_no_empty_idx).empty()) // mb slow
-			first_no_empty_idx++;
 	}
-
-	return {ops::NotFound};
 }
 
