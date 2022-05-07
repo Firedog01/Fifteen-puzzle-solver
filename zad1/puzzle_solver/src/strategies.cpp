@@ -197,10 +197,12 @@ op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &
 			info.visited++;
 			uint16_t priority = neighbour->second.get_length();		///
 			priority += heuristic(neighbour, solved_table);			/// f = g(n) + h(n)
-			if(cur_size < priority) { // resize vector if necessary
+			if(cur_size <= priority) { // resize vector if necessary
 				uint16_t dif = priority - cur_size + 1;
-				for (uint16_t j = 0; j < dif; j++)
+				for (uint16_t j = 0; j < dif; j++) {
 					open_st.emplace_back();
+					cur_size++;
+				}
 			}
 
 			/// if !P.has(n):
