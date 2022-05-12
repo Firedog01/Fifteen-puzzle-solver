@@ -13,7 +13,6 @@ class board_handler {
     board_handler() = default; // static class
 public:
     static state* new_moved(const state& old_state, ops::operators op);
-    static state* new_moved(const state_astr& old_state, ops::operators op);
     static uint8_t* new_solved_table();
     static void display_board(const board& b);
 };

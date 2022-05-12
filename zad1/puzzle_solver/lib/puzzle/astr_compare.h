@@ -4,8 +4,8 @@
 #include "state_astr.h"
 
 struct astr_compare {
-	bool operator()(const state_astr& a, const state_astr& b) {
-		return a.f > b.f;
+	bool operator()(const state_astr& lhs, const state_astr& rhs) {
+		return lhs.f < rhs.f;
 	}
 };
 

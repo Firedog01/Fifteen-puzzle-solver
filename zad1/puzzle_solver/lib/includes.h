@@ -13,7 +13,7 @@ namespace ops {
 		R = 0b01,
 		U = 0b10,
 		D = 0b11,
-		None, NotFound
+		None = 0b1000, NotFound = 0b1001
 	};
     enum heuristics {
 		hamm,

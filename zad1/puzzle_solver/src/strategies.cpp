@@ -45,10 +45,10 @@ op_path strategies::bfs(state &start_state, ops::operators *order, info_bundle &
 			state* neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
 			if(neighbour == nullptr)  // illegal move or trivial(for example RL or UD)
                 continue;
-            info.set_max_depth((int)neighbour->second.path.size());
             if(board::same(solved_table, neighbour->first.table.data())) { /// if n is solution:
                 // solution found!
 				info.visited++; //xxx not sure if right
+				info.set_max_depth((int)neighbour->second.path.size());
                 op_path solution = neighbour->second;
                 delete neighbour;
                 return solution;							/// return success
@@ -147,11 +147,12 @@ astar(G, s):
     while !P.isempty():
         v = P.pull() // najmniejszy priorytet
         if T.has(v):
-            pass
+            continue
         if v is solution:
             return success
         T.add(v)
         for n in v.neighbours:
+        	f = g(n) + h(n)
             P.insert(n, f)
     return failure
  */
@@ -165,62 +166,39 @@ op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &
 	else if(heur == ops::manh)
 		heuristic = &heuristics::manhattan;
 
-	std::vector<std::unordered_map<board, op_path, board_hash>> open_st(OPEN_STATES_SIZE); 	/// P - priority queue
-	uint8_t first_no_empty_idx = 0;
-	uint16_t cur_size = OPEN_STATES_SIZE;
+	std::priority_queue<state_astr, std::vector<state_astr>, astr_compare> open_states;	/// P - priority queue
 	std::unordered_map<board, op_path, board_hash> processed_states; 	/// T - set
 	ops::operators order[] = {ops::L, ops::R, ops::U, ops::D};
-	map_iterator cur_state;
+	const state_astr* cur_state;
 	ops::operators *op;
 
-	open_st.at(0).insert(start_state);							/// P.insert(s, 0)
-	while(true) {														/// while !P.isempty():
-		first_no_empty_idx = 0;
-		// our implementation requires checking emptiness of container in following way
-		while(open_st.at(first_no_empty_idx).empty()) { // mb slow
-			first_no_empty_idx++;
-			if(first_no_empty_idx == cur_size) { 	/// while !P.isempty()
-				return {ops::NotFound};			/// return failure
-			}
-		}
-		info.processed++;
-		cur_state = open_st.at(first_no_empty_idx).begin(); 			/// 	v = P.pull()
-		if(board::same(cur_state->first.table.data(), solved_table)) 	///		if v is solution:
-			return cur_state->second;									///			return success
-		processed_states.insert(*cur_state);							/// 	T.add(v)
-		op = order;
-		for(uint8_t i = 0; i < 4; i++, op++) {							/// 	for n in v.neighbours:
-			auto neighbour = board_handler::new_moved(*cur_state, *op); // uses new, must be deleted
-			if(neighbour == nullptr)  // illegal move or trivial(for example RL or UD)
-				continue;
-			info.visited++;
-			uint16_t priority = neighbour->second.get_length();		///
-			priority += heuristic(neighbour, solved_table);			/// f = g(n) + h(n)
-			if(cur_size <= priority) { // resize vector if necessary
-				uint16_t dif = priority - cur_size + 1;
-				for (uint16_t j = 0; j < dif; j++) {
-					open_st.emplace_back();
-					cur_size++;
-				}
-				//info.set_max_depth(cur_size);
-			}
+	open_states.emplace(start_state, 0); /// P.insert(s, 0)
 
-			/// if !P.has(n):
-			/// 	P.insert(n, f)
-			/// else:
-			///     if P.priority(n) > f:
-			///         P.update(n, f)
-			auto it = open_st.at(priority).insert(*neighbour);
-			if(it.second) { // insertion successful
-				for(uint16_t j = priority + 1; j < cur_size; j++) { // delete all same state
-					auto it_j = open_st.at(j).find(neighbour->first);
-					if(it_j != open_st.at(j).end())
-						open_st.at(j).erase(it_j);
-				}
-			}
-			delete neighbour;
+	while(!open_states.empty()) {
+		info.processed++;
+		cur_state = &open_states.top(); /// v = P.pull()
+		state state_mut(cur_state->s);
+		if(board::same(solved_table, state_mut.first.table.data())) { 	/// if n is solution:
+			return state_mut.second;									/// 	return success
 		}
-		open_st.at(first_no_empty_idx).erase(cur_state);
+		auto it = processed_states.insert(state_mut);
+		if(!it.second) { 	/// if T.has(v):
+							/// 	continue
+		} else {
+			op = order;
+			for(int i = 0; i < 4; i++, op++) {                	/// for n in neighbours(v):
+				state* neighbour = board_handler::new_moved(state_mut, *op); // uses new, must be deleted
+				if(neighbour == nullptr)  // illegal move or trivial(for example RL or UD)
+					continue;
+				uint16_t f = heuristic(neighbour, solved_table)
+						   + neighbour->second.get_length();
+				open_states.emplace(*neighbour, f);				/// 	P.insert(n, f)
+				info.visited++;
+				delete neighbour;
+			}
+		}
+		open_states.pop();
 	}
+	return {ops::NotFound}; /// return failure
 }
 
