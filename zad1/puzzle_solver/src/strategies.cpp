@@ -178,6 +178,8 @@ op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &
 		info.processed++;
 		cur_state = &open_states.top(); /// v = P.pull()
 		state state_mut(cur_state->s);
+		open_states.pop();
+
 		if(board::same(solved_table, state_mut.first.table.data())) { 	/// if n is solution:
 			return state_mut.second;									/// 	return success
 		}
@@ -197,7 +199,7 @@ op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &
 				delete neighbour;
 			}
 		}
-		open_states.pop();
+
 	}
 	return {ops::NotFound}; /// return failure
 }
