@@ -1,9 +1,9 @@
 #include "../../lib/info/info_bundle.h"
 
-info_bundle::info_bundle() : timer(), processed(0), visited(0), max_depth(1) {}
+info_bundle::info_bundle() : _timer(), processed(0), visited(0), max_depth(1) {}
 
 double info_bundle::get_time() {
-    double ret = timer.elapsed();
+    double ret = _timer.elapsed();
     return ret;
 }
 
