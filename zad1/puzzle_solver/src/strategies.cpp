@@ -106,11 +106,13 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 		open_states.pop();										///
 		auto it = processed_states.insert(cur_state);
 		isInserted = it.second;
-		if(it.first->second.get_length() > cur_state.second.get_length()) {
-			processed_states.erase(it.first); // how long does this execute?
-			processed_states.insert(cur_state);
-//			it.first->second = cur_state.second;
-			isInserted = true;
+
+		if(!isInserted) {
+			if(it.first->second.get_length() > cur_state.second.get_length()) {
+				processed_states.erase(it.first); // how long does this execute?
+				processed_states.insert(cur_state);
+				isInserted = true;
+			}
 		}
 		if(isInserted && cur_state.second.path.size() < DFS_MAX_DEPTH) {
 			ops::operators* op = order + 3;
@@ -135,7 +137,8 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* astar(G, s):
+/*
+astar(G, s):
     if s is solution:
         return success
     P = priority_queue()
@@ -143,17 +146,13 @@ op_path strategies::dfs(state &start_state, ops::operators *order, info_bundle &
     P.insert(s, 0) // z priorytetem zero
     while !P.isempty():
         v = P.pull() // najmniejszy priorytet
+        if T.has(v):
+            pass
         if v is solution:
             return success
         T.add(v)
         for n in v.neighbours:
-            if !T.has(n):
-                f = g(n) + h(n)
-                if !P.has(n):
-                    P.insert(n, f)
-                else:
-                    if P.priority(n) > f:
-                        P.update(n, f) // zastąp
+            P.insert(n, f)
     return failure
  */
 op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &info) const {
@@ -203,6 +202,7 @@ op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &
 					open_st.emplace_back();
 					cur_size++;
 				}
+				//info.set_max_depth(cur_size);
 			}
 
 			/// if !P.has(n):

@@ -183,4 +183,21 @@ astar(G, s):
                         P.update(n, f) // zastąp
     return failure
 
+astar(G, s):
+    if s is solution:
+        return success
+    P = priority_queue()
+    T = set()
+    P.insert(s, 0) // z priorytetem zero
+    while !P.isempty():
+        v = P.pull() // najmniejszy priorytet
+        if T.has(v):
+            pass
+        if v is solution:
+            return success
+        T.add(v)
+        for n in v.neighbours:
+            P.insert(n, f)
+    return failure
+
 
