@@ -3,10 +3,12 @@
 // Are numbers in place
 uint16_t heuristics::hamming(state* st, const uint8_t *solved) {
 	uint16_t ret = 0;
-	for(int i = 0; i < board::len; i++) {
-		if (st->first.table[i] == 0) // Ignore 0
+    auto sti = st->first.table.begin();
+    const uint8_t *soli = solved;
+	for(; sti < st->first.table.end(); sti++, soli++) {
+		if (*sti == 0) // Ignore 0
 			continue;
-		ret += (st->first.table[i] == solved[i]);
+		ret += (*sti != *soli);
 	}
 	return ret;
 }
