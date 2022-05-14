@@ -7,7 +7,7 @@
 #define DFS 1
 #define ASTR 2
 
-#define CUR_RUNNED BFS
+#define CUR_RUNNED DFS
 
 using namespace std;
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 #endif
         for(int i = 0; i < param_size; i++, param++) {
             stringstream out_file_name;
-            out_file_name <<  program_root << out_dir << file_name << "_" << strategy << "_" << param;
+            out_file_name <<  program_root << out_dir << file_name << "_" << strategy << "_" << *param;
             string result_file = out_file_name.str() + "_sol.txt";
             string extra_file = out_file_name.str() + "_stats.txt";
 
