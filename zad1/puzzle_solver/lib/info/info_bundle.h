@@ -7,7 +7,7 @@
 #include "../includes.h"
 
 class info_bundle {
-    timer timer;
+    timer _timer;
     int max_depth;
 public:
     info_bundle();

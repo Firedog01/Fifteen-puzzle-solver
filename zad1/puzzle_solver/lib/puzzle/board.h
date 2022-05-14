@@ -31,6 +31,7 @@ struct board {
     // needs to be called before any comparison
     // but after setting of board::len
     static void init_same();
+    std::string toString() const;
 };
 
 #endif //ZAD1_BOARD_H

@@ -78,3 +78,14 @@ board& board::operator=(const board &other) {
     table = other.table;
     return *this;
 }
+
+std::string board::toString() const {
+    std::string ret;
+    for(int i = 0; i < board::len; i++) {
+        ret += std::to_string(table[i]);
+        ret += " ";
+        if(i % board::width == board::width - 1)
+            ret += '\n';
+    }
+    return ret;
+}

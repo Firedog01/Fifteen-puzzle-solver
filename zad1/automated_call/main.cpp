@@ -7,7 +7,7 @@
 #define DFS 1
 #define ASTR 2
 
-#define CUR_RUNNED DFS
+#define CUR_RUNNED BFS
 
 using namespace std;
 

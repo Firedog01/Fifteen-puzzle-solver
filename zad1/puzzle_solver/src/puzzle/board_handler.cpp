@@ -11,11 +11,12 @@ uint8_t *board_handler::new_solved_table() {
     return solved_table;
 }
 
-state* board_handler::new_moved(const std::pair<board, op_path>& old_state, ops::operators op) {
+state* board_handler::new_moved(const state& old_state, ops::operators op) {
     uint8_t moved_zero_idx = old_state.first.zero_idx;
 	uint8_t op_int = op;
-	// enum operators {L, R, U, D, Undefined};
-	//				   0  1  2  3
+	// enum operators {L, R, U, D, None, NotFound};
+	//				   0  1  2  3	  8			9
+	//			  +4   4  5  6  7 <--- if path is empty
 	if(old_state.second.path.empty())
 		op_int += 0b100;
     switch(op_int) {
@@ -70,7 +71,7 @@ state* board_handler::new_moved(const std::pair<board, op_path>& old_state, ops:
         default:
             break;
     }
-    board moved_board(old_state.first);
+    board moved_board(old_state.first); // throws
     op_path moved_path(old_state.second, op);
 
     uint8_t *ptr_oz = moved_board.table.data(),
@@ -92,7 +93,4 @@ void board_handler::display_board(const board& b) {
     }
 }
 
-state *board_handler::new_moved(const state_astr &old_state, ops::operators op) {
-	return new_moved(state_astr::get_state(old_state), op);
-}
 
