@@ -31,6 +31,8 @@ int main(int argc, char *argv[]) {
     string orders[] = {"rdul", "rdlu", "drul", "drlu",
                        "ludr", "lurd", "uldr", "ulrd"};
 
+    string heurs[] = {"hamm", "manh"};
+
     string this_path(argv[0]);
     string program_root = this_path.substr(0, this_path.find(PROJECT_DIR));
     string file_dir = program_root + STARTS_DIR;
@@ -43,23 +45,31 @@ int main(int argc, char *argv[]) {
         fnIdx += STARTS_DIR.length();
         string file_name = file_path.substr(fnIdx);
         file_name = file_name.substr(0, file_name.find('.'));
+        string *param;
+        uint8_t param_size;
 #if CUR_RUNNED == BFS
         string strategy = "bfs";
 		string out_dir = OUT_BFS;
+        param = orders;
+        param_size = 8;
 #elif CUR_RUNNED == DFS
 		string strategy = "dfs";
 		string out_dir = OUT_DFS;
+        param = orders;
+        param_size = 8;
 #elif CUR_RUNNED == ASTR
 		string strategy = "astr";
 		string out_dir = OUT_ASTR;
+        param = heurs;
+        param_size = 2;
 #endif
-        for(const auto& order : orders) {
+        for(int i = 0; i < param_size; i++, param++) {
             stringstream out_file_name;
-            out_file_name <<  program_root << out_dir << file_name << "_" << strategy << "_" << order;
+            out_file_name <<  program_root << out_dir << file_name << "_" << strategy << "_" << param;
             string result_file = out_file_name.str() + "_sol.txt";
             string extra_file = out_file_name.str() + "_stats.txt";
 
-            manager manager(strategy, order, file_path, result_file, extra_file);
+            manager manager(strategy, *param, file_path, result_file, extra_file);
             manager.find_solution();
         }
     }
