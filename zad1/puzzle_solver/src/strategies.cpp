@@ -192,6 +192,7 @@ op_path strategies::astr(state &start_state, ops::heuristics heur, info_bundle &
 				state* neighbour = board_handler::new_moved(state_mut, *op); // uses new, must be deleted
 				if(neighbour == nullptr)  // illegal move or trivial(for example RL or UD)
 					continue;
+                info.set_max_depth((int) neighbour->second.path.size());
 				uint16_t f = heuristic(neighbour, solved_table)
 						   + neighbour->second.get_length();
 				open_states.emplace(*neighbour, f);				/// 	P.insert(n, f)
