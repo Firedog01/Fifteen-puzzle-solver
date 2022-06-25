@@ -1,5 +1,7 @@
 ## Fifteen puzzle solver ##
 
+![obraz](https://user-images.githubusercontent.com/93220207/175778866-9486b5cb-6a6d-4f45-9774-542feed49745.png)
+
 ### Polski ###
 
 Program napisany w C++ rozwiązujący zagadkę "piętnastka" poprzez przeglądanie przestrzenii stanów. 
